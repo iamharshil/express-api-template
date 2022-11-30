@@ -10,6 +10,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/iamharshil/express-api-template#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamharshil/express-api-template.git"
+  },
   "author": "Harshil Chudasama",
   "license": "ISC",
   "dependencies": {
