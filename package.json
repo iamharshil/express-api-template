@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/iamharshil/express-api-template.git"
   },
-  "author": "Harshil Chudasama",
+  "author": "iamharshil",
   "license": "ISC",
   "dependencies": {
     "inquirer": "^8.0.0"
