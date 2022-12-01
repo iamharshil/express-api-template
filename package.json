@@ -1,7 +1,7 @@
 {
   "name": "express-api-template",
-  "version": "1.0.6",
-  "description": "Project for instantiating express project via cli",
+  "version": "1.0.7",
+  "description": "Project for quick express setup",
   "main": "index.js",
   "type": "module",
   "bin": {
@@ -15,8 +15,21 @@
     "type": "git",
     "url": "git+https://github.com/iamharshil/express-api-template.git"
   },
+  "bugs": {
+    "url": "https://github.com/iamharshil/express-api-template/issues",
+    "email": "harshilc71@gmail.com"
+  },
   "author": "iamharshil",
-  "license": "ISC",
+  "license": "MIT",
+  "keywords": [
+    "express",
+    "express javascript",
+    "express typescript",
+    "express template",
+    "typescript template",
+    "express api template",
+    "typescript api template"
+  ],
   "dependencies": {
     "inquirer": "^8.0.0"
   },
