@@ -42,8 +42,8 @@ After command runs successfully follow this steps
 
 ---
 
-![Instagram](https://img.shields.io/badge/Instagram-purple.svg?style=flat-square)
-![Github](https://img.shields.io/badge/Github-black.svg?style=flat-square)
+[Instagram](https://instagram.com/iam_harshil) | [Github](https://github.com/iamharshil)
+
 ![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
 ![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
 ![](https://img.shields.io/npm/v/node?style=flat-square)
