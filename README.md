@@ -9,12 +9,13 @@ The express-api-template is a starter template for building a Node.js API using 
 
 This template includes the following features:
 
--   A pre-configured Express.js server with basic middleware and error handling.
+-   A pre-configured Express.js server with basic mongodb setup.
 -   Support for both JavaScript and TypeScript.
 -   A simple example route to get you started.
--   A pre-configured Jest test suite with examples.
+-   A pre-configured MVC architecture.
 -   A pre-configured ESLint configuration with examples.
--   A pre-configured Prettier configuration with examples.
+-   A pre-configured Prettier and Rome.
+-   A new scalable architecture.
 
 To get started with this template, simply run the following command:
 
