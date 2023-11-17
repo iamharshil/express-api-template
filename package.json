@@ -1,45 +1,47 @@
 {
-  "name": "express-api-template",
-  "version": "1.0.7",
-  "description": "Project for quick express setup",
-  "main": "index.js",
-  "type": "module",
-  "bin": {
-    "template-cli": "./index.js"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "homepage": "https://github.com/iamharshil/express-api-template#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/iamharshil/express-api-template.git"
-  },
-  "bugs": {
-    "url": "https://github.com/iamharshil/express-api-template/issues",
-    "email": "harshilc71@gmail.com"
-  },
-  "author": "iamharshil",
-  "license": "MIT",
-  "keywords": [
-    "express",
-    "express javascript",
-    "express typescript",
-    "express template",
-    "typescript template",
-    "express api template",
-    "typescript api template"
-  ],
-  "dependencies": {
-    "inquirer": "^8.0.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.13.10",
-    "eslint": "^7.22.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-prettier": "^3.3.1",
-    "prettier": "^2.2.1"
-  }
+    "name": "express-api-template",
+    "version": "2.0",
+    "description": "Project for quick express.js setup",
+    "main": "index.js",
+    "type": "module",
+    "bin": {
+        "template-cli": "./index.js"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "homepage": "https://github.com/iamharshil/express-api-template#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/iamharshil/express-api-template.git"
+    },
+    "bugs": {
+        "url": "https://github.com/iamharshil/express-api-template/issues",
+        "email": "harshilc71@gmail.com"
+    },
+    "author": "iamharshil",
+    "license": "MIT",
+    "keywords": [
+        "express",
+        "express javascript",
+        "express typescript",
+        "express template",
+        "typescript template",
+        "express api template",
+        "typescript api template",
+        "node template",
+        "node api template"
+    ],
+    "dependencies": {
+        "inquirer": "^9.2.12"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.13.10",
+        "eslint": "^7.22.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-prettier": "^3.3.1",
+        "prettier": "^2.2.1"
+    }
 }

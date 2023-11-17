@@ -1,10 +1,25 @@
 # express-api-template
+![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
+![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
+![](https://img.shields.io/npm/v/node?style=flat-square)
+![](https://img.shields.io/github/stars/iamharshil/express-api-template?style=flat-square)
 
-This is simple template for express framework with javascript
+The express-api-template is a starter template for building a Node.js API using the Express.js framework. It is designed to provide a quick and easy way to get started with building a new API project, with support for both JavaScript and TypeScript.
+
+This template includes the following features:
+
+- A pre-configured Express.js server with basic middleware and error handling.
+- Support for both JavaScript and TypeScript.
+- A simple example route to get you started.
+- A pre-configured Jest test suite with examples.
+- A pre-configured ESLint configuration with examples.
+- A pre-configured Prettier configuration with examples.
+
+To get started with this template, simply run the following command:
 
 ## Installation
 
-To create project run this command:
+To create a new project using this template, run the following command:
 
 ```bash
 npx express-api-template
@@ -40,11 +55,9 @@ After command runs successfully follow this steps
    - Set up you're .env file.
    - Run "start" or "dev" command in terminal using you're package manager to start you're project.
 
----
 
-[Instagram](https://instagram.com/iam_harshil) | [Github](https://github.com/iamharshil)
+## Connect with me
 
-![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
-![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
-![](https://img.shields.io/npm/v/node?style=flat-square)
-![](https://img.shields.io/github/stars/iamharshil/express-api-template?style=flat-square)
+[![Instagram](https://img.shields.io/badge/-Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://instagram.com/iam_harshil)
+[![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/iamharshil)
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/harshil-chudasama)
