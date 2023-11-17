@@ -1,4 +1,5 @@
 # express-api-template
+
 ![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
 ![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
 ![](https://img.shields.io/npm/v/node?style=flat-square)
@@ -8,12 +9,12 @@ The express-api-template is a starter template for building a Node.js API using 
 
 This template includes the following features:
 
-- A pre-configured Express.js server with basic middleware and error handling.
-- Support for both JavaScript and TypeScript.
-- A simple example route to get you started.
-- A pre-configured Jest test suite with examples.
-- A pre-configured ESLint configuration with examples.
-- A pre-configured Prettier configuration with examples.
+-   A pre-configured Express.js server with basic middleware and error handling.
+-   Support for both JavaScript and TypeScript.
+-   A simple example route to get you started.
+-   A pre-configured Jest test suite with examples.
+-   A pre-configured ESLint configuration with examples.
+-   A pre-configured Prettier configuration with examples.
 
 To get started with this template, simply run the following command:
 
@@ -21,40 +22,37 @@ To get started with this template, simply run the following command:
 
 To create a new project using this template, run the following command:
 
-```bash
-npx express-api-template
-```
+`npx express-api-template`
 
 After command runs successfully follow this steps
 
 1. Step 1 [OPTIONAL]:
 
-   - If you want to update all the dependency to the latest version
+    - If you want to update all the dependency to the latest version
 
-   ```bash
-   npm update
-   # or
-   yarn update
-   # or
-   pnpm update
-   ```
+    ```bash
+    npm update
+    # or
+    yarn update
+    # or
+    pnpm update
+    ```
 
 2. Step 2:
 
-   - Run this command to install all the dependency
+    - Run this command to install all the dependency
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
+    ```bash
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
+    ```
 
 3. Step 3:
-   - Set up you're .env file.
-   - Run "start" or "dev" command in terminal using you're package manager to start you're project.
-
+    - Set up you're .env file.
+    - Run "start" or "dev" command in terminal using you're package manager to start you're project.
 
 ## Connect with me
 
