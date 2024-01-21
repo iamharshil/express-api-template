@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from "mongoose";
 
 async function Database() {
-	const URL = process.env.MONG_URL || "";
+	const URL = process.env.MONGO_URI || "";
 	return mongoose.connect(
 		URL,
 		{
