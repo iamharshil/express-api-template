@@ -13,7 +13,7 @@ app.use(morgan("dev"));
 app.use(compression());
 
 // routes
-app.use("/api,", (req, res) => res.send("Hello World!"));
+app.use("/api", require("./routes/index.route"));
 app.all("*", (req, res) => res.status(404).send("404 Not Found"));
 
 module.exports = app;

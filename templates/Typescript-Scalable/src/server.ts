@@ -1,4 +1,4 @@
-import http from "https";
+import http from "http";
 import app from "./app";
 import { PORT } from "./config/server.config";
 import Database from "./utils/Database";

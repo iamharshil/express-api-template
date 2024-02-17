@@ -8,4 +8,4 @@ Router.get("/:id", ApiController.read);
 Router.put("/:id", ApiController.update);
 Router.delete("/:id", ApiController.remove);
 
-Router.module.exports = Router;
+module.exports = Router;

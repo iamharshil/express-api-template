@@ -7,4 +7,4 @@ usersRouter.post("/create", UserController.create);
 usersRouter.put("/update/:id", UserController.update);
 usersRouter.delete("/delete/:id", UserController.remove);
 
-usersRouter.module.exports = usersRouter;
+module.exports = usersRouter;
