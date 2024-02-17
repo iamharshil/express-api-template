@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "bin": {
-        "template-cli": "./index.js"
+        "template-cli": "index.js"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
