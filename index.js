@@ -104,7 +104,7 @@ async function runCLI() {
 			process.exit(1);
 		}
 
-		const projectPath = path.join(__dirname, projectName);
+		const projectPath = path.join(process.cwd(), projectName);
 		console.log(chalk.blue(`Creating project in ${projectPath}`));
 		if (!fs.existsSync(projectPath)) {
 			console.error(chalk.red(`Error: Project directory "${projectName}" does not exist.`));
