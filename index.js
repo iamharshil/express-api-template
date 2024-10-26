@@ -99,9 +99,14 @@ async function runCLI() {
 		const spinner = ora("Creating project").start();
 
 		// create project
-		fs.mkdirSync(path.join(CURR_DIR, projectName));
+		if (!fs.existsSync(projectName)) {
+			fs.mkdirSync(projectName);
+		} else {
+			console.error(chalk.red(`Error: Project directory "${projectName}" already exists.`));
+			process.exit(1);
+		}
 
-		const projectPath = path.join(CURR_DIR, projectName);
+		const projectPath = path.join(process.cwd(), projectName);
 		if (!fs.existsSync(projectPath)) {
 			console.error(chalk.red(`Error: Project directory "${projectName}" does not exist.`));
 			process.exit(1);
@@ -110,8 +115,6 @@ async function runCLI() {
 		createDirectoryContents(path.join(__dirname, "templates", template), projectName);
 
 		spinner.succeed("Project files created");
-
-		const projectDir = path.join(CURR_DIR, projectName);
 
 		if (installDependencies) {
 			spinner.start();
@@ -126,15 +129,8 @@ async function runCLI() {
 			try {
 				spinner.text = `Installing dependencies using ${packageManager}`;
 
-				if (fs.existsSync(projectDir)) {
-					process.chdir(projectDir);
-				} else {
-					console.error(chalk.red(`Error: Project directory "${projectDir}" does not exist.`));
-					process.exit(1);
-				}
-
 				const execAsync = promisify(exec);
-				const { stdout, stderr } = await execAsync(installCommand, { cwd: projectDir });
+				const { stdout, stderr } = await execAsync(installCommand, { cwd: `./${projectName}` });
 
 				if (stdout) {
 					console.log(chalk.dim(stdout));
