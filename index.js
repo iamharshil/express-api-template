@@ -9,24 +9,7 @@ import { fileURLToPath } from "node:url";
 import createDirectoryContents from "./createDirectoryContents.js";
 import { spawn } from "node:child_process";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
 const CHOICES = fs.readdirSync(`${__dirname}/templates`);
-/*
-
-1. project name from args
-2. proceed?
-3. if no project-name, project-name?
-4. template?
-5. install dependencies?
-  - if yes, package manager?
-6. create project directory
-7. create project files
-8. change package.json name
-9. install dependencies
-10. success message
-
-
-*/
 
 async function runCLI() {
 	try {
@@ -93,6 +76,15 @@ async function runCLI() {
 			packageManager = installDependencies ? pm : "npm";
 		}
 
+		const { initialize_git } = await inquirer.prompt([
+			{
+				type: "confirm",
+				name: "initialize_git",
+				message: "Initialize git repository? (default: yes)",
+				default: true,
+			},
+		]);
+
 		// show spinner
 		const spinner = ora("Creating project").start();
 
@@ -113,6 +105,11 @@ async function runCLI() {
 
 		createDirectoryContents(path.join(__dirname, "templates", template), projectName);
 
+		// package.json name
+		const packageJsonPath = path.join(projectPath, "package.json");
+		const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8").replace(/"name": ".*"/, `"name": "${projectName}"`));
+		fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
 		spinner.succeed("Project files created");
 
 		if (installDependencies) {
@@ -127,41 +124,7 @@ async function runCLI() {
 
 			try {
 				spinner.start(`Installing dependencies using ${packageManager}`);
-				// const child = spawn(installCommand, { shell: true, cwd: resolvedProjectDir, stdio: "pipe" });
 
-				// const stdoutChunks = [];
-				// const stderrChunks = [];
-
-				// child.stdout.on("data", (chunk) => stdoutChunks.push(chunk));
-				// child.stderr.on("data", (chunk) => stderrChunks.push(chunk));
-
-				// const done = new Promise((resolve) =>
-				// 	child.on("close", (code) => {
-				// 		if (code === 0) {
-				// 			resolve();
-				// 		} else {
-				// 			const error = new Error(`Failed to install dependencies using ${packageManager}`);
-				// 			error.code = code;
-				// 			error.stdout = Buffer.concat(stdoutChunks).toString();
-				// 			error.stderr = Buffer.concat(stderrChunks).toString();
-				// 			resolve(Promise.reject(error));
-				// 		}
-				// 	}),
-				// );
-				// await done;
-
-				// const stdout = Buffer.concat(stdoutChunks).toString();
-				// const stderr = Buffer.concat(stderrChunks).toString();
-
-				// if (stdout) {
-				// 	console.log(chalk.dim(stdout));
-				// }
-
-				// if (stderr) {
-				// 	console.log(chalk.yellow("Warnings during installation:"), chalk.dim(stderr));
-				// }
-
-				// read package.json from resolvedProjectDir and get the dependencies and devDependencies and install them using packageManager install to cwd: resolvedProjectDir using spawn
 				const { dependencies, devDependencies } = JSON.parse(fs.readFileSync(`${__dirname}/templates/${template}/package.json`, "utf-8"));
 				const dependenciesList = Object.keys(dependencies).join(" ");
 				const devDependenciesList = Object.keys(devDependencies).join(" ");
@@ -225,24 +188,19 @@ async function runCLI() {
 					console.error(chalk.yellow(`Please install ${packageManager} and try again.`));
 				}
 			}
-
-			// const execPromise = promisify(exec);
-			// try {
-			// 	const { stderr } = await execPromise(installCommand, { cwd: projectDir });
-			// 	spinner.succeed("Dependencies installed");
-			// 	if (stderr) console.error(chalk.yellow("Warnings:"), stderr);
-			// } catch (error) {
-			// 	spinner.fail("Failed to install dependencies");
-			// 	console.error(chalk.red("Error:"), error);
-			// 	process.exit(1);
-			// }
 		}
+
+		if (initialize_git) {
+			const { stdout, stderr } = await execPromise("git init", { cwd: projectDir });
+			if (stderr) console.error(chalk.yellow("Warnings:"), stderr);
+			if (stdout) console.log(chalk.dim(stdout));
+			console.log(chalk.green("Git repository initialized"));
+		}
+
 		console.log("\n", chalk.green("✨ Project created successfully ✨"));
-		// console cd to project
-		console.log(chalk.blue(`cd ${projectName}`));
-		console.log(chalk.blue("Change .env variables"));
-		console.log(chalk.blue("Happy coding!"));
-		console.log(chalk.blue(`🚀 ${__dirname}`));
+		console.log(chalk.blue(`1. cd ${projectName}`));
+		console.log(chalk.blue("2. change .env variables and spin the project\n"));
+		console.log(chalk.blue("Happy coding! 🚀"));
 	} catch (error) {
 		console.error(chalk.red("Error:"), error);
 		process.exit(1);
