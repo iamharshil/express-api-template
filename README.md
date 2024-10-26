@@ -4,9 +4,9 @@
 
 <span style="color: red;">**Warning:** This is the canary version of this template.</span>
 
-![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
+[![Canary](https://img.shields.io/static/v1?label=canary&message=v3.0.0&color=blue)](https://img.shields.io/github/package-json/v/iamharshil/express-api-template/canary%2Fv3.0.0)
 ![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
-![](https://img.shields.io/npm/v/node?style=flat-square)
+![](https://img.shields.io/npm/v/express?style=flat-square)
 ![](https://img.shields.io/github/stars/iamharshil/express-api-template?style=flat-square)
 
 The express-api-template is a starter template for building a Node.js API using the Express.js framework. It is designed to provide a quick and easy way to get started with building a new API project, with support for both JavaScript and TypeScript. This is the canary version of the template, which means that all the work in-progress features are available in this version. The canary version is updated more frequently than the stable version, but it may contain bugs or other issues that have not been fully resolved yet.
