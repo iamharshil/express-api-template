@@ -191,7 +191,20 @@ async function runCLI() {
 		}
 
 		if (initialize_git) {
-			const { stdout, stderr } = await execPromise("git init", { cwd: projectDir });
+			await new Promise((resolve, reject) => {
+				const gitInit = spawn("git", ["init"], { cwd: projectPath, stdio: "inherit" });
+				gitInit.on("close", (code) => {
+					if (code === 0) {
+						resolve();
+					} else {
+						const error = new Error(`Failed to run command: ${command}`);
+						error.code = code;
+						error.stdout = Buffer.concat(stdoutChunks).toString();
+						error.stderr = Buffer.concat(stderrChunks).toString();
+						resolve(Promise.reject(error));
+					}
+				});
+			});
 			if (stderr) console.error(chalk.yellow("Warnings:"), stderr);
 			if (stdout) console.log(chalk.dim(stdout));
 			console.log(chalk.green("Git repository initialized"));
