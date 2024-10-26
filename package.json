@@ -1,6 +1,6 @@
 {
     "name": "express-api-template",
-    "version": "2.0.3",
+    "version": "3.0.0-beta.0",
     "description": "Project for quick express.js setup",
     "main": "index.js",
     "type": "module",
