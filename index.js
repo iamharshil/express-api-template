@@ -7,9 +7,7 @@ import fs from "node:fs";
 import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import createDirectoryContents from "./createDirectoryContents.js";
-import { exec } from "node:child_process";
-import { promisify } from "node:util";
-const CURR_DIR = process.cwd();
+import { spawn } from "node:child_process";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const CHOICES = fs.readdirSync(`${__dirname}/templates`);
@@ -51,7 +49,7 @@ async function runCLI() {
 			const { projectNameInput } = await inquirer.prompt([
 				{
 					type: "input",
-					name: "project-name",
+					name: "projectNameInput",
 					message: "Enter the project name:",
 					validate: (input) => {
 						if (/^([A-Za-z\-\\_\d])+$/.test(input)) return true;
@@ -92,7 +90,7 @@ async function runCLI() {
 					choices: ["npm", "yarn", "pnpm", "bun"],
 				},
 			]);
-			packageManager = pm;
+			packageManager = installDependencies ? pm : "npm";
 		}
 
 		// show spinner
@@ -106,7 +104,7 @@ async function runCLI() {
 			process.exit(1);
 		}
 
-		const projectPath = path.join(process.cwd(), projectName);
+		const projectPath = path.join(__dirname, projectName);
 		if (!fs.existsSync(projectPath)) {
 			console.error(chalk.red(`Error: Project directory "${projectName}" does not exist.`));
 			process.exit(1);
@@ -117,28 +115,96 @@ async function runCLI() {
 		spinner.succeed("Project files created");
 
 		if (installDependencies) {
-			spinner.start();
+			const resolvedProjectDir = path.resolve(projectPath);
+			process.chdir(resolvedProjectDir);
 
 			const installCommand = `${packageManager} install`;
-
 			if (!installCommand) {
 				console.error(chalk.red(`Unsupported package manager: ${packageManager}`));
 				process.exit(1);
 			}
 
 			try {
-				spinner.text = `Installing dependencies using ${packageManager}`;
+				spinner.start(`Installing dependencies using ${packageManager}`);
+				// const child = spawn(installCommand, { shell: true, cwd: resolvedProjectDir, stdio: "pipe" });
 
-				const execAsync = promisify(exec);
-				const { stdout, stderr } = await execAsync(installCommand, { cwd: `./${projectName}` });
+				// const stdoutChunks = [];
+				// const stderrChunks = [];
 
-				if (stdout) {
-					console.log(chalk.dim(stdout));
-				}
+				// child.stdout.on("data", (chunk) => stdoutChunks.push(chunk));
+				// child.stderr.on("data", (chunk) => stderrChunks.push(chunk));
 
-				if (stderr) {
-					console.log(chalk.yellow("Warnings during installation:"), chalk.dim(stderr));
-				}
+				// const done = new Promise((resolve) =>
+				// 	child.on("close", (code) => {
+				// 		if (code === 0) {
+				// 			resolve();
+				// 		} else {
+				// 			const error = new Error(`Failed to install dependencies using ${packageManager}`);
+				// 			error.code = code;
+				// 			error.stdout = Buffer.concat(stdoutChunks).toString();
+				// 			error.stderr = Buffer.concat(stderrChunks).toString();
+				// 			resolve(Promise.reject(error));
+				// 		}
+				// 	}),
+				// );
+				// await done;
+
+				// const stdout = Buffer.concat(stdoutChunks).toString();
+				// const stderr = Buffer.concat(stderrChunks).toString();
+
+				// if (stdout) {
+				// 	console.log(chalk.dim(stdout));
+				// }
+
+				// if (stderr) {
+				// 	console.log(chalk.yellow("Warnings during installation:"), chalk.dim(stderr));
+				// }
+
+				// read package.json from resolvedProjectDir and get the dependencies and devDependencies and install them using packageManager install to cwd: resolvedProjectDir using spawn
+				const { dependencies, devDependencies } = JSON.parse(fs.readFileSync(`${__dirname}/templates/${template}/package.json`, "utf-8"));
+				const dependenciesList = Object.keys(dependencies).join(" ");
+				const devDependenciesList = Object.keys(devDependencies).join(" ");
+				const installDependenciesCommand = `${packageManager} install ${dependenciesList}`;
+				const installDevDependenciesCommand = `${packageManager} install ${devDependenciesList} --save-dev`;
+
+				const runCommand = async (command) => {
+					const child = spawn(command, { shell: true, cwd: resolvedProjectDir, stdio: "pipe" });
+
+					const stdoutChunks = [];
+					const stderrChunks = [];
+
+					child.stdout.on("data", (chunk) => stdoutChunks.push(chunk));
+					child.stderr.on("data", (chunk) => stderrChunks.push(chunk));
+
+					const done = new Promise((resolve) =>
+						child.on("close", (code) => {
+							if (code === 0) {
+								resolve();
+							} else {
+								const error = new Error(`Failed to run command: ${command}`);
+								error.code = code;
+								error.stdout = Buffer.concat(stdoutChunks).toString();
+								error.stderr = Buffer.concat(stderrChunks).toString();
+								resolve(Promise.reject(error));
+							}
+						}),
+					);
+					await done;
+
+					const stdout = Buffer.concat(stdoutChunks).toString();
+					const stderr = Buffer.concat(stderrChunks).toString();
+
+					if (stdout) {
+						console.log(chalk.dim(stdout));
+					}
+
+					if (stderr) {
+						console.log(chalk.yellow("Warnings during installation:"), chalk.dim(stderr));
+					}
+				};
+
+				await runCommand(installDependenciesCommand);
+				await runCommand(installDevDependenciesCommand);
 
 				spinner.succeed(chalk.green("Dependencies installed"));
 			} catch (error) {
@@ -175,6 +241,7 @@ async function runCLI() {
 		console.log(chalk.blue(`cd ${projectName}`));
 		console.log(chalk.blue("Change .env variables"));
 		console.log(chalk.blue("Happy coding!"));
+		console.log(chalk.blue(`🚀 ${__dirname}`));
 	} catch (error) {
 		console.error(chalk.red("Error:"), error);
 		process.exit(1);
