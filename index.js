@@ -8,6 +8,7 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import createDirectoryContents from "./createDirectoryContents.js";
 import { spawn } from "node:child_process";
+import { error } from "node:console";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CHOICES = fs.readdirSync(`${__dirname}/templates`);
 
@@ -195,17 +196,15 @@ async function runCLI() {
 				const gitInit = spawn("git", ["init"], { cwd: projectPath, stdio: "inherit" });
 				gitInit.on("close", (code) => {
 					if (code === 0) {
+						console.log(chalk.green("Git repository initialized.!!"));
 						resolve();
 					} else {
-						const error = new Error(`Failed to run command: ${command}`);
-						error.code = code;
-						resolve(Promise.reject(error));
+						console.log(chalk.red("Failed to initialize git repository!"));
+						reject(error);
+						return;
 					}
 				});
 			});
-			if (stderr) console.error(chalk.yellow("Warnings:"), stderr);
-			if (stdout) console.log(chalk.dim(stdout));
-			console.log(chalk.green("Git repository initialized"));
 		}
 
 		console.log("\n", chalk.green("✨ Project created successfully ✨"));
