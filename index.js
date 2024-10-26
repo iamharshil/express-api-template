@@ -98,7 +98,6 @@ async function runCLI() {
 		}
 
 		const projectPath = path.join(process.cwd(), projectName);
-		console.log(chalk.blue(`Creating project in ${projectPath}`));
 		if (!fs.existsSync(projectPath)) {
 			console.error(chalk.red(`Error: Project directory "${projectName}" does not exist.`));
 			process.exit(1);
@@ -126,9 +125,18 @@ async function runCLI() {
 			try {
 				spinner.start(`Installing dependencies using ${packageManager}`);
 
-				const { dependencies, devDependencies } = JSON.parse(fs.readFileSync(`${__dirname}/templates/${template}/package.json`, "utf-8"));
-				const dependenciesList = Object.keys(dependencies).join(" ");
-				const devDependenciesList = Object.keys(devDependencies).join(" ");
+				const packageJsonPath = `${__dirname}/templates/${template}/package.json`;
+				const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+
+				const dependencies = packageJson.dependencies || {};
+				const devDependencies = packageJson.devDependencies || {};
+
+				const dependenciesList = Object.keys(dependencies)
+					.map((dep) => `"${dep}"`)
+					.join(" ");
+				const devDependenciesList = Object.keys(devDependencies)
+					.map((dep) => `"${dep}"`)
+					.join(" ");
 				const installDependenciesCommand = `${packageManager} install ${dependenciesList}`;
 				const installDevDependenciesCommand = `${packageManager} install ${devDependenciesList} --save-dev`;
 
