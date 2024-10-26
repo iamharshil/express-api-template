@@ -1,6 +1,6 @@
 {
     "name": "express-api-template",
-    "version": "3.0.2-canary.0",
+    "version": "3.0.3-canary.0",
     "description": "Project for quick express.js setup",
     "main": "index.js",
     "type": "module",
