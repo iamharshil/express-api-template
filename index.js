@@ -98,7 +98,7 @@ async function runCLI() {
 
 		// create project
 		if (!fs.existsSync(projectName)) {
-			fs.mkdirSync(projectName);
+			await fs.promises.mkdir(projectName);
 		} else {
 			console.error(chalk.red(`Error: Project directory "${projectName}" already exists.`));
 			process.exit(1);
