@@ -199,8 +199,6 @@ async function runCLI() {
 					} else {
 						const error = new Error(`Failed to run command: ${command}`);
 						error.code = code;
-						error.stdout = Buffer.concat(stdoutChunks).toString();
-						error.stderr = Buffer.concat(stderrChunks).toString();
 						resolve(Promise.reject(error));
 					}
 				});
