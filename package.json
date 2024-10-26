@@ -33,7 +33,9 @@
         "node api template"
     ],
     "dependencies": {
-        "inquirer": "^9.2.12"
+        "chalk": "^5.3.0",
+        "inquirer": "^9.2.12",
+        "ora": "^8.1.0"
     },
     "devDependencies": {
         "@babel/core": "^7.13.10",

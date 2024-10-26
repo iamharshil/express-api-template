@@ -1,33 +1,32 @@
-# express-api-template (canary-version)
+# express-api-template
 
----
-
-<span style="color: red;">**Warning:** This is the canary version of this template.</span>
-
-[![Canary](https://img.shields.io/static/v1?label=canary&message=v3.0.0&color=blue)](https://img.shields.io/github/package-json/v/iamharshil/express-api-template/canary%2Fv3.0.0)
+![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
 ![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
-![](https://img.shields.io/npm/v/express?style=flat-square)
+![](https://img.shields.io/npm/v/node?style=flat-square)
 ![](https://img.shields.io/github/stars/iamharshil/express-api-template?style=flat-square)
 
-The express-api-template is a starter template for building a Node.js API using the Express.js framework. It is designed to provide a quick and easy way to get started with building a new API project, with support for both JavaScript and TypeScript. This is the canary version of the template, which means that all the work in-progress features are available in this version. The canary version is updated more frequently than the stable version, but it may contain bugs or other issues that have not been fully resolved yet.
+The express-api-template is a starter template for building a Node.js API using the Express.js framework. It is designed to provide a quick and easy way to get started with building a new API project, with support for both JavaScript and TypeScript.
 
 This template includes the following features:
 
--   A pre-configured Express.js server with basic mongodb setup.
--   Support for both JavaScript and TypeScript.
--   A simple example route to get you started.
--   A pre-configured MVC architecture.
--   A pre-configured ESLint configuration with examples.
--   A pre-configured Prettier and Rome.
--   A new scalable architecture.
+- A pre-configured Express.js server with mongodb setup.
+- Support for both JavaScript and TypeScript.
+- A simple example route to get you started.
+- A pre-configured MVC architecture.
+- ESLint configuration with examples.
+- Prettier and Biome configurations.
+- A new scalable architecture with more security oriented packages like `helmet`. This architecture is more secure and scalable than the previous one (MVC structure).
 
 To get started with this template, simply run the following command:
 
 ## Installation
 
-To create a new project using this template, run the following command:
+There are multiple versions of this template available for use. You can use stable, beta or canary version of this template.
 
-`npx express-api-template@canary`
+Here is different commands for using different versions of `express-api-template`.:
+    1. stable version: `npx express-api-template`
+    2. beta version: `npx express-api-template@beta`
+    3. canary version: `npx express-api-template@canary`
 
 After command runs successfully follow this steps
 
