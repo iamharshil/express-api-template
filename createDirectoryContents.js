@@ -1,26 +1,36 @@
 import fs from "node:fs";
 import path from "node:path";
-const CURR_DIR = process.cwd();
 
-const createDirectoryContents = (templatePath, newProjectPath) => {
-	const filesToCreate = fs.readdirSync(templatePath);
+const CURRENT_WORKING_DIR = process.cwd();
+const GIT_IGNORE_FILE = ".gitignore";
+const NPM_IGNORE_FILE = ".npmignore";
+const ENCODING = "utf8";
 
-	for (let file of filesToCreate) {
-		const origFilePath = path.join(templatePath, file);
-		const stats = fs.statSync(origFilePath);
+const createDirectoryContents = (sourceTemplatePath, targetProjectPath) => {
+	const sourceFiles = fs.readdirSync(sourceTemplatePath);
 
-		if (stats.isFile()) {
-			const contents = fs.readFileSync(origFilePath, "utf8");
+	for (const sourceFile of sourceFiles) {
+		const sourceFilePath = path.join(sourceTemplatePath, sourceFile);
+		const fileStats = fs.statSync(sourceFilePath);
 
-			if (file === ".npmignore") {
-				file = ".gitignore";
-			}
+		if (fileStats.isFile()) {
+			const fileContents = fs.readFileSync(sourceFilePath, ENCODING);
 
-			const writePath = path.join(CURR_DIR, newProjectPath, file);
-			fs.writeFileSync(writePath, contents, "utf8");
-		} else if (stats.isDirectory()) {
-			fs.mkdirSync(path.join(CURR_DIR, newProjectPath, file));
-			createDirectoryContents(path.join(templatePath, file), path.join(newProjectPath, file));
+			// Convert .npmignore to .gitignore if necessary
+			const targetFileName = sourceFile === NPM_IGNORE_FILE ? GIT_IGNORE_FILE : sourceFile;
+
+			const targetFilePath = path.join(CURRENT_WORKING_DIR, targetProjectPath, targetFileName);
+
+			fs.writeFileSync(targetFilePath, fileContents, ENCODING);
+		} else if (fileStats.isDirectory()) {
+			const targetDirPath = path.join(CURRENT_WORKING_DIR, targetProjectPath, sourceFile);
+			fs.mkdirSync(targetDirPath);
+
+			// Recursive call for subdirectories
+			createDirectoryContents(
+				path.join(sourceTemplatePath, sourceFile),
+				path.join(targetProjectPath, sourceFile),
+			);
 		}
 	}
 };

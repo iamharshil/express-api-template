@@ -1,14 +1,16 @@
 {
     "name": "express-api-template",
     "version": "3.0.11-canary.0",
-    "description": "Project for quick express.js setup",
+    "description": "A professional, production-ready Express.js API boilerplate with TypeScript support, best practices, and modern development tools",
     "main": "index.js",
     "type": "module",
     "bin": {
-        "template-cli": "index.js"
+        "create-express-api": "index.js"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node index.js",
+        "lint": "eslint . --ext .js,.ts",
+        "format": "prettier --write \"**/*.{js,ts,json,md}\""
     },
     "homepage": "https://github.com/iamharshil/express-api-template#readme",
     "repository": {
@@ -19,32 +21,46 @@
         "url": "https://github.com/iamharshil/express-api-template/issues",
         "email": "harshilc71@gmail.com"
     },
-    "author": "iamharshil",
+    "author": {
+        "name": "Harshil Chudasama",
+        "email": "harshilc71@gmail.com",
+        "url": "https://github.com/iamharshil"
+    },
     "license": "MIT",
     "keywords": [
         "express",
-        "express javascript",
-        "express typescript",
-        "express template",
-        "typescript template",
-        "express api template",
-        "typescript api template",
-        "node template",
-        "node api template"
+        "express-generator",
+        "express-template",
+        "express-boilerplate",
+        "node",
+        "nodejs",
+        "typescript",
+        "api",
+        "rest-api",
+        "starter-kit",
+        "boilerplate",
+        "scaffold",
+        "generator",
+        "cli",
+        "create-app"
     ],
     "dependencies": {
         "chalk": "^5.3.0",
-        "execa": "^9.4.1",
-        "inquirer": "^9.2.12",
+        "inquirer": "^12.0.1",
         "ora": "^8.1.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.13.10",
-        "eslint": "^7.22.0",
-        "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-config-prettier": "^8.1.0",
-        "eslint-plugin-import": "^2.22.1",
-        "eslint-plugin-prettier": "^3.3.1",
-        "prettier": "^2.2.1"
+        "@babel/core": "^7.26.0",
+        "@biomejs/biome": "^1.9.4",
+        "eslint": "^9.13.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-node": "^11.1.0",
+        "prettier": "^3.3.3"
+    },
+    "engines": {
+        "node": ">=18.0.0"
     }
 }

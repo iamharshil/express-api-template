@@ -8,24 +8,60 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import createDirectoryContents from "./createDirectoryContents.js";
 import { spawn } from "node:child_process";
-import { error } from "node:console";
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const CHOICES = fs.readdirSync(`${__dirname}/templates`);
 
-async function runCLI() {
+const CURRENT_DIR = dirname(fileURLToPath(import.meta.url));
+const AVAILABLE_TEMPLATES = fs.readdirSync(`${CURRENT_DIR}/templates`).sort();
+const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm", "bun"];
+
+const executeCommand = async (command, workingDirectory) => {
+	return new Promise((resolve, reject) => {
+		const childProcess = spawn(command, {
+			shell: true,
+			cwd: workingDirectory,
+			stdio: ["ignore", "pipe", "pipe"],
+		});
+
+		let commandOutput = "";
+		let commandErrors = "";
+
+		childProcess.stdout?.on("data", (data) => {
+			commandOutput += data;
+		});
+		childProcess.stderr?.on("data", (data) => {
+			commandErrors += data;
+		});
+
+		childProcess.on("close", (exitCode) => {
+			if (exitCode === 0) {
+				resolve({ commandOutput, commandErrors });
+			} else {
+				const error = new Error(`Command execution failed: ${command}`);
+				error.code = exitCode;
+				error.output = commandOutput;
+				error.errors = commandErrors;
+				reject(error);
+			}
+		});
+	});
+};
+
+async function initializeProject() {
 	try {
+		console.log(chalk.cyan("\n🚀 Welcome to Project Scaffolding Tool 🚀\n"));
+
 		let projectName = process.argv[2];
 
-		const { shouldProceed } = await inquirer.prompt([
+		const { confirmCreation } = await inquirer.prompt([
 			{
 				type: "confirm",
-				name: "shouldProceed",
-				message: "Do you want to proceed with the project creation? (default: yes)",
+				name: "confirmCreation",
+				message: "Would you like to create a new project?",
 				default: true,
 			},
 		]);
-		if (!shouldProceed) {
-			console.log(chalk.yellow("Project creation cancelled!"));
+
+		if (!confirmCreation) {
+			console.log(chalk.yellow("\n⚠️  Project creation cancelled. Have a great day!\n"));
 			return;
 		}
 
@@ -34,195 +70,164 @@ async function runCLI() {
 				{
 					type: "input",
 					name: "projectNameInput",
-					message: "Enter the project name:",
+					message: "📝 Please enter your project name:",
 					validate: (input) => {
-						if (/^([A-Za-z\-\\_\d])+$/.test(input)) return true;
-						return "Project name may only include letters, numbers, underscores and hashes.";
+						const isValid = /^([A-Za-z\-\\_\d])+$/.test(input);
+						return isValid || "Project name can only contain letters, numbers, underscores, and hashes.";
 					},
 				},
 			]);
 			projectName = projectNameInput;
 		}
 
-		const { template } = await inquirer.prompt([
+		const { selectedTemplate } = await inquirer.prompt([
 			{
 				type: "list",
-				name: "template",
-				message: "Choose a template:",
-				choices: CHOICES,
+				name: "selectedTemplate",
+				message: "🎯 Select a template for your project:",
+				choices: AVAILABLE_TEMPLATES,
 			},
 		]);
 
-		// install dependencies
-		const { installDependencies } = await inquirer.prompt([
+		const { shouldInstallDeps } = await inquirer.prompt([
 			{
 				type: "confirm",
-				name: "installDependencies",
-				message: "Do you want to install dependencies? (default: yes)",
+				name: "shouldInstallDeps",
+				message: "📦 Would you like to install dependencies?",
 				default: true,
 			},
 		]);
 
-		// if true select package manager
-		let packageManager;
-		if (installDependencies) {
-			const { pm } = await inquirer.prompt([
+		let selectedPackageManager;
+		if (shouldInstallDeps) {
+			const { packageManager } = await inquirer.prompt([
 				{
 					type: "list",
-					name: "pm",
-					message: "Choose a package manager:",
-					choices: ["npm", "yarn", "pnpm", "bun"],
+					name: "packageManager",
+					message: "🔧 Select your preferred package manager:",
+					choices: PACKAGE_MANAGERS,
 				},
 			]);
-			packageManager = installDependencies ? pm : "npm";
+			selectedPackageManager = packageManager;
 		}
 
-		const { initialize_git } = await inquirer.prompt([
+		const { initializeGit } = await inquirer.prompt([
 			{
 				type: "confirm",
-				name: "initialize_git",
-				message: "Initialize git repository? (default: yes)",
+				name: "initializeGit",
+				message: "🔄 Initialize a Git repository?",
 				default: true,
 			},
 		]);
 
-		// show spinner
-		const spinner = ora("Creating project").start();
+		const progressSpinner = ora("🏗️  Creating your project...").start();
 
-		// create project
-		if (!fs.existsSync(projectName)) {
-			await fs.promises.mkdir(projectName);
-		} else {
-			console.error(chalk.red(`Error: Project directory "${projectName}" already exists.`));
-			process.exit(1);
-		}
-
+		// Project directory validation and creation
 		const projectPath = path.join(process.cwd(), projectName);
-		if (!fs.existsSync(projectPath)) {
-			console.error(chalk.red(`Error: Project directory "${projectName}" does not exist.`));
+
+		if (fs.existsSync(projectPath)) {
+			progressSpinner.fail(chalk.red(`❌ Error: A directory named "${projectName}" already exists.`));
 			process.exit(1);
 		}
 
-		createDirectoryContents(path.join(__dirname, "templates", template), projectName);
+		await fs.promises.mkdir(projectName);
 
-		// package.json name
+		if (!fs.existsSync(projectPath)) {
+			progressSpinner.fail(chalk.red(`❌ Error: Failed to create directory "${projectName}".`));
+			process.exit(1);
+		}
+
+		createDirectoryContents(path.join(CURRENT_DIR, "templates", selectedTemplate), projectName);
+
+		// Update package configuration
 		const packageJsonPath = path.join(projectPath, "package.json");
-		const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8").replace(/"name": ".*"/, `"name": "${projectName}"`));
-		fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+		const packageConfig = JSON.parse(
+			fs.readFileSync(packageJsonPath, "utf-8").replace(/"name": ".*"/, `"name": "${projectName}"`),
+		);
+		fs.writeFileSync(packageJsonPath, JSON.stringify(packageConfig, null, 2));
 
-		spinner.succeed("Project files created");
+		progressSpinner.succeed(chalk.green("✅ Project structure created successfully"));
 
-		if (installDependencies) {
-			const resolvedProjectDir = path.resolve(projectPath);
-			process.chdir(resolvedProjectDir);
-
-			const installCommand = `${packageManager} install`;
-			if (!installCommand) {
-				console.error(chalk.red(`Unsupported package manager: ${packageManager}`));
-				process.exit(1);
-			}
-
+		// Dependency installation
+		if (shouldInstallDeps) {
 			try {
-				spinner.start(`Installing dependencies using ${packageManager}`);
+				const resolvedProjectDir = path.resolve(projectPath);
+				process.chdir(resolvedProjectDir);
 
-				const packageJsonPath = `${__dirname}/templates/${template}/package.json`;
-				const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+				progressSpinner.start(`📦 Installing dependencies using ${selectedPackageManager}...`);
 
-				const dependencies = packageJson.dependencies || {};
-				const devDependencies = packageJson.devDependencies || {};
+				const templatePackageJsonPath = `${CURRENT_DIR}/templates/${selectedTemplate}/package.json`;
+				const { dependencies = {}, devDependencies = {} } = JSON.parse(
+					fs.readFileSync(templatePackageJsonPath, "utf-8"),
+				);
 
-				const dependenciesList = Object.keys(dependencies)
-					.map((dep) => `"${dep}"`)
-					.join(" ");
-				const devDependenciesList = Object.keys(devDependencies)
-					.map((dep) => `"${dep}"`)
-					.join(" ");
-				const installDependenciesCommand = `${packageManager} install ${dependenciesList}`;
-				const installDevDependenciesCommand = `${packageManager} install ${devDependenciesList} --save-dev`;
+				const formatDependencyString = (deps) =>
+					Object.keys(deps)
+						.map((dep) => `"${dep}"`)
+						.join(" ");
 
-				const runCommand = async (command) => {
-					const child = spawn(command, { shell: true, cwd: resolvedProjectDir, stdio: "pipe" });
+				// Parallel dependency installation
+				const installationTasks = [
+					dependencies &&
+						Object.keys(dependencies).length &&
+						executeCommand(
+							`${selectedPackageManager} install ${formatDependencyString(dependencies)}`,
+							resolvedProjectDir,
+						),
+					devDependencies &&
+						Object.keys(devDependencies).length &&
+						executeCommand(
+							`${selectedPackageManager} install ${formatDependencyString(devDependencies)} --save-dev`,
+							resolvedProjectDir,
+						),
+				].filter(Boolean);
 
-					const stdoutChunks = [];
-					const stderrChunks = [];
-
-					child.stdout.on("data", (chunk) => stdoutChunks.push(chunk));
-					child.stderr.on("data", (chunk) => stderrChunks.push(chunk));
-
-					const done = new Promise((resolve) =>
-						child.on("close", (code) => {
-							if (code === 0) {
-								resolve();
-							} else {
-								const error = new Error(`Failed to run command: ${command}`);
-								error.code = code;
-								error.stdout = Buffer.concat(stdoutChunks).toString();
-								error.stderr = Buffer.concat(stderrChunks).toString();
-								resolve(Promise.reject(error));
-							}
-						}),
-					);
-					await done;
-
-					const stdout = Buffer.concat(stdoutChunks).toString();
-					const stderr = Buffer.concat(stderrChunks).toString();
-
-					if (stdout) {
-						console.log(chalk.dim(stdout));
+				const results = await Promise.all(installationTasks);
+				// Log installation warnings if any
+				for (const { commandErrors } of results) {
+					if (commandErrors) {
+						console.log(chalk.yellow("\n⚠️  Installation warnings:"), chalk.dim(commandErrors));
 					}
-
-					if (stderr) {
-						console.log(chalk.yellow("Warnings during installation:"), chalk.dim(stderr));
-					}
-				};
-
-				await runCommand(installDependenciesCommand);
-				await runCommand(installDevDependenciesCommand);
-
-				spinner.succeed(chalk.green("Dependencies installed"));
-			} catch (error) {
-				console.error(chalk.red("Error:"), error);
-				spinner.fail(chalk.red(`Failed to install dependencies using ${packageManager}`));
-
-				if (error.stderr) {
-					console.error(chalk.red("Error details:"), chalk.dim(error.stderr));
 				}
 
-				if (error.stdout) {
-					console.error(chalk.dim(error.stdout));
+				progressSpinner.succeed(chalk.green("✅ Dependencies installed successfully"));
+			} catch (error) {
+				progressSpinner.fail(chalk.red(`❌ Failed to install dependencies using ${selectedPackageManager}`));
+
+				if (error.errors) {
+					console.error(chalk.red("\n🔍 Error details:"), chalk.dim(error.errors));
 				}
 
 				if (error.code === "ENOENT") {
-					console.error(chalk.red(`Error: Package manager ${packageManager} not installed in your system!`));
-					console.error(chalk.yellow(`Please install ${packageManager} and try again.`));
+					console.error(chalk.red(`\n❌ ${selectedPackageManager} is not installed on your system`));
+					console.error(chalk.yellow(`📝 Please install ${selectedPackageManager} and try again`));
 				}
+
+				throw error;
 			}
 		}
 
-		if (initialize_git) {
-			await new Promise((resolve, reject) => {
-				const gitInit = spawn("git", ["init"], { cwd: projectPath, stdio: "inherit" });
-				gitInit.on("close", (code) => {
-					if (code === 0) {
-						console.log(chalk.green("Git repository initialized.!!"));
-						resolve();
-					} else {
-						console.log(chalk.red("Failed to initialize git repository!"));
-						reject(error);
-						return;
-					}
-				});
-			});
+		// Git initialization
+		if (initializeGit) {
+			try {
+				await executeCommand("git init", projectPath);
+				console.log(chalk.green("\n✅ Git repository initialized successfully"));
+			} catch (error) {
+				console.log(chalk.red("\n❌ Failed to initialize Git repository"));
+				throw error;
+			}
 		}
 
-		console.log("\n", chalk.green("✨ Project created successfully ✨"));
-		console.log(chalk.blue(`1. cd ${projectName}`));
-		console.log(chalk.blue("2. change .env variables and spin the project\n"));
-		console.log(chalk.blue("Happy coding! 🚀"));
+		console.log(chalk.green("\n\n🎉 Project created successfully! 🎉"));
+		console.log(chalk.cyan("\nNext steps:"));
+		console.log(chalk.white(`1. cd ${projectName}`));
+		console.log(chalk.white("2. Configure your environment variables"));
+		console.log(chalk.white("3. Start development\n"));
+		console.log(chalk.cyan("Thank you for using our scaffolding tool! Happy coding! 🚀\n"));
 	} catch (error) {
-		console.error(chalk.red("Error:"), error);
+		console.error(chalk.red("\n❌ An error occurred:"), error);
 		process.exit(1);
 	}
 }
 
-runCLI();
+initializeProject();
