@@ -224,6 +224,9 @@ async function initializeProject() {
 		console.log(chalk.white("2. Configure your environment variables"));
 		console.log(chalk.white("3. Start development\n"));
 		console.log(chalk.cyan("Thank you for using our scaffolding tool! Happy coding! 🚀\n"));
+		console.log(
+			chalk.magenta("\n" + "Made with ❤️  by Harshil Chudasama\n" + "GitHub: https://github.com/iamharshil\n"),
+		);
 	} catch (error) {
 		console.error(chalk.red("\n❌ An error occurred:"), error);
 		process.exit(1);
