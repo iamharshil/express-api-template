@@ -9,6 +9,38 @@ import { fileURLToPath } from "node:url";
 import createDirectoryContents from "./createDirectoryContents.js";
 import { spawn } from "node:child_process";
 
+// Add at the start of your file
+process.on("SIGINT", () => {
+	console.clear(); // Clear console for clean exit
+	console.log(`\n${"─".repeat(50)}`);
+	console.log(chalk.yellow("\n👋 Thanks for checking out Express API Template!"));
+
+	console.log(chalk.magenta("\n❤️  Made with love by Harshil Chudasama"));
+	console.log(chalk.blue("🌟 Star us on GitHub: https://github.com/iamharshil"));
+	console.log(chalk.blue("🐦 Follow me on Twitter: @iamharshil"));
+	console.log(`\n${"─".repeat(50)}\n`);
+
+	process.exit(0);
+});
+
+// Add error handling for other termination signals
+process.on("SIGTERM", () => {
+	console.log(chalk.yellow("\n🛑 Process terminated"));
+	process.exit(0);
+});
+
+// Handle uncaught exceptions
+process.on("uncaughtException", (error) => {
+	console.error(chalk.red("\n❌ An unexpected error occurred:"), error);
+	process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (error) => {
+	console.error(chalk.red("\n❌ Unhandled promise rejection:"), error);
+	process.exit(1);
+});
+
 const CURRENT_DIR = dirname(fileURLToPath(import.meta.url));
 const AVAILABLE_TEMPLATES = fs.readdirSync(`${CURRENT_DIR}/templates`).sort();
 const PACKAGE_MANAGERS = ["npm", "yarn", "pnpm", "bun"];
