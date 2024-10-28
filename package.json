@@ -1,6 +1,6 @@
 {
     "name": "express-api-template",
-    "version": "3.0.13-canary.0",
+    "version": "3.0.14-canary.0",
     "description": "A professional, production-ready Express.js API boilerplate with TypeScript support, best practices, and modern development tools",
     "main": "index.js",
     "type": "module",
