@@ -8,6 +8,7 @@
         "template-cli": "index.js"
     },
     "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
         "release": "np"
     },
     "homepage": "https://github.com/iamharshil/express-api-template#readme",
