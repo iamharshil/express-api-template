@@ -9,7 +9,7 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "release": "np --no-test"
+        "release": "np --yolo"
     },
     "homepage": "https://github.com/iamharshil/express-api-template#readme",
     "repository": {
