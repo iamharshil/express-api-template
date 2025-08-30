@@ -8,7 +8,7 @@
         "template-cli": "index.js"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "release": "np"
     },
     "homepage": "https://github.com/iamharshil/express-api-template#readme",
     "repository": {
@@ -42,6 +42,7 @@
         "eslint-config-prettier": "^8.1.0",
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-prettier": "^3.3.1",
+        "np": "^10.2.0",
         "prettier": "^2.2.1"
     }
 }
