@@ -34,16 +34,18 @@
         "node api template"
     ],
     "dependencies": {
-        "inquirer": "^9.2.12"
+        "inquirer": "^9.2.12",
+        "ora": "^8.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.13.10",
-        "eslint": "^7.22.0",
+        "biome": "^0.3.3",
+        "eslint": "^7.32.0",
         "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-config-prettier": "^8.1.0",
-        "eslint-plugin-import": "^2.22.1",
-        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-config-prettier": "^8.10.2",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-prettier": "^3.4.1",
         "np": "^10.2.0",
-        "prettier": "^2.2.1"
+        "prettier": "^3.6.2"
     }
 }
