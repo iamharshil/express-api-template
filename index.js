@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
+import { exec } from "node:child_process";
+import fs from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import inquirer from "inquirer";
-import fs from "fs";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { exec } from "child_process";
 import ora from "ora";
 import createDirectoryContents from "./createDirectoryContents.js";
+
 const CURR_DIR = process.cwd();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -21,7 +22,7 @@ const QUESTIONS = [
         type: "input",
         message: "What should your project folder be called?",
         default: "my-express-api",
-        validate: function (input) {
+        validate: (input) => {
             if (/^([A-Za-z\-_\d])+$/.test(input)) return true;
             return "Project name can only include letters, numbers, underscores, and hyphens.";
         },
@@ -63,7 +64,7 @@ inquirer.prompt(QUESTIONS).then((answers) => {
 
     if (shouldInstallPackages) {
         const spinner = ora("Installing packages...").start();
-        exec("npm install", { cwd: `${CURR_DIR}/${projectName}` }, (error, stdout, stderr) => {
+        exec("npm install", { cwd: `${CURR_DIR}/${projectName}` }, (error) => {
             spinner.stop();
             if (error) {
                 console.error(`Error installing dependencies: ${error.message}`);

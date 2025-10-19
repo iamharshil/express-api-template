@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from "node:fs";
+
 const CURR_DIR = process.cwd();
 
 const createDirectoryContents = (templatePath, newProjectPath) => {
