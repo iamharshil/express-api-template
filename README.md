@@ -9,13 +9,13 @@ The express-api-template is a starter template for building a Node.js API using 
 
 This template includes the following features:
 
--   A pre-configured Express.js server with basic mongodb setup.
--   Support for both JavaScript and TypeScript.
--   A simple example route to get you started.
--   A pre-configured MVC architecture.
--   A pre-configured ESLint configuration with examples.
--   A pre-configured Prettier and Rome.
--   A new scalable architecture.
+- A pre-configured Express.js server with basic mongodb setup.
+- Support for both JavaScript and TypeScript.
+- A simple example route to get you started.
+- A pre-configured MVC architecture.
+- A pre-configured ESLint configuration with examples.
+- A pre-configured Prettier and Rome.
+- A new scalable architecture.
 
 To get started with this template, simply run the following command:
 
@@ -28,7 +28,6 @@ To create a new project using this template, run the following command:
 After command runs successfully follow this steps
 
 1. Step 1 [OPTIONAL]:
-
     - If you want to update all the dependency to the latest version
 
     ```bash
@@ -40,7 +39,6 @@ After command runs successfully follow this steps
     ```
 
 2. Step 2:
-
     - Run this command to install all the dependency
 
     ```bash
@@ -52,8 +50,8 @@ After command runs successfully follow this steps
     ```
 
 3. Step 3:
-    - Set up you're .env file.
-    - Run "start" or "dev" command in terminal using you're package manager to start you're project.
+    - Set up your .env file.
+    - Run "start" or "dev" command in terminal using your package manager to start your project.
 
 ## Connect with me
 
