@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import RESPONSE from "../lib/response";
+import RESPONSE from "../lib/response.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

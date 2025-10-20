@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import RES from "../lib/response";
+import RES from "../lib/response.js";
 
 const encryption = {
 	encrypt: async (text) => {

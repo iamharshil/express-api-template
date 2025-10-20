@@ -1,8 +1,8 @@
-import RESPONSE from "../lib/response";
-import User from "../models/User.model";
-import { generateToken } from "../utils/common";
-import encryption from "../utils/encryption";
-import { LoginSchema, RegisterSchema, VerifyEmailSchema } from "../utils/validation";
+import RESPONSE from "../lib/response.js";
+import User from "../models/User.model.js";
+import { generateToken } from "../utils/common.js";
+import encryption from "../utils/encryption.js";
+import { LoginSchema, RegisterSchema, VerifyEmailSchema } from "../utils/validation.js";
 
 const UserController = {
 	Register: async (req, res) => {

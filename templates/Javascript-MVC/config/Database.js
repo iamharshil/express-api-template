@@ -23,7 +23,7 @@ const Database = async () => {
 			cached.promise = mongoose
 				.connect(MONGO_URI)
 				.then(() => {
-					console.log("Database connected");
+					console.log("🚀 Database connected successfully");
 					cached.conn = mongoose;
 					return cached.conn;
 				})

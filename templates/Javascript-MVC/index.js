@@ -1,8 +1,8 @@
-import "dotenv-safe/config";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import csurf from "csurf";
+import "dotenv-safe/config.js";
 import express from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import { rateLimit } from "express-rate-limit";
@@ -52,9 +52,6 @@ app.use(
 );
 app.use(cors({ origin: "*", credentials: true }));
 app.use(mongoSanitize()); // Removed prohibited characters from req.body, req.query, and req.params
-
-// NOTE: xss-clean is deprecated.
-app.use(xss());
 
 // Compression.
 app.use(compression());
