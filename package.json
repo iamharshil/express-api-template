@@ -35,7 +35,7 @@
     ],
     "dependencies": {
         "@biomejs/biome": "^2.3.11",
-        "inquirer": "^13.1.0",
+        "@inquirer/prompts": "^7.0.0",
         "ora": "^9.0.0"
     },
     "devDependencies": {

@@ -1,60 +1,158 @@
-# express-api-template
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/iamharshil/express-api-template?style=for-the-badge&color=blue" alt="Release" />
+  <img src="https://img.shields.io/npm/dt/express-api-template?style=for-the-badge&color=green" alt="Downloads" />
+  <img src="https://img.shields.io/github/license/iamharshil/express-api-template?style=for-the-badge" alt="License" />
+  <img src="https://img.shields.io/github/stars/iamharshil/express-api-template?style=for-the-badge&color=yellow" alt="Stars" />
+</p>
 
-![](https://img.shields.io/github/v/release/iamharshil/express-api-template?style=flat-square)
-![](https://img.shields.io/github/license/iamharshil/express-api-template?style=flat-square)
-![](https://img.shields.io/npm/v/node?style=flat-square)
-![](https://img.shields.io/github/stars/iamharshil/express-api-template?style=flat-square)
+<h1 align="center">🚀 Express API Template</h1>
 
-The express-api-template is a starter template for building a Node.js API using the Express.js framework. It is designed to provide a quick and easy way to get started with building a new API project, with support for both JavaScript and TypeScript.
+<p align="center">
+  <strong>A production-ready CLI to scaffold Express.js APIs in seconds</strong>
+</p>
 
-This template includes the following features:
+<p align="center">
+  Skip the boilerplate. Start building. Choose your language. Pick your architecture.
+</p>
 
-- A pre-configured Express.js server with basic mongodb setup.
-- Support for both JavaScript and TypeScript.
-- A simple example route to get you started.
-- A pre-configured MVC architecture.
-- A pre-configured ESLint configuration with examples.
-- A pre-configured Prettier and Rome.
-- A new scalable architecture.
+---
 
-To get started with this template, simply run the following command:
+## ✨ Features
 
-## Installation
+| Feature | Description |
+|---------|-------------|
+| 🔷 **TypeScript & JavaScript** | Full support for both languages—you choose |
+| 🏗️ **MVC or Scalable Architecture** | Classic Model-View-Controller or modern modular structure |
+| 🍃 **MongoDB Ready** | Pre-configured MongoDB connection with Mongoose |
+| 📂 **Smart Project Structure** | Organized folders for controllers, routes, models, and utilities |
+| 🔧 **ESLint + Prettier + Biome** | Code quality tools configured out of the box |
+| 📦 **Auto Dependency Install** | Optional automatic `npm install` during setup |
+| 🎯 **Interactive CLI** | Guided prompts for a smooth setup experience |
 
-To create a new project using this template, run the following command:
+---
 
-`npx express-api-template`
+## 📦 Quick Start
 
-After command runs successfully follow this steps
+```bash
+npx express-api-template
+```
 
-1. Step 1 [OPTIONAL]:
-    - If you want to update all the dependency to the latest version
+That's it! The CLI will guide you through:
 
-    ```bash
-    npm update
-    # or
-    yarn update
-    # or
-    pnpm update
-    ```
+1. **Project name** — Name your project folder
+2. **Architecture** — Choose MVC or Scalable (Modular)
+3. **Language** — JavaScript or TypeScript
+4. **Dependencies** — Auto-install packages or do it yourself
 
-2. Step 2:
-    - Run this command to install all the dependency
+---
 
-    ```bash
-    npm install
-    # or
-    yarn install
-    # or
-    pnpm install
-    ```
+## 🏗️ Project Structures
 
-3. Step 3:
-    - Set up your .env file.
-    - Run "start" or "dev" command in terminal using your package manager to start your project.
+### MVC (Model-View-Controller)
 
-## Connect with me
+Traditional, battle-tested architecture ideal for small to medium projects.
 
-[![Instagram](https://img.shields.io/badge/-Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://instagram.com/iam_harshil)
-[![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/iamharshil)
-[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/harshil-chudasama)
+```
+my-project/
+├── config/          # Configuration files
+├── controllers/     # Request handlers
+├── models/          # Mongoose schemas
+├── routers/         # Express routes
+├── utils/           # Helper functions
+├── lib/             # Shared libraries
+├── index.js         # Entry point
+└── .env             # Environment variables
+```
+
+### Scalable (Modular)
+
+Feature-based architecture designed for large, maintainable codebases.
+
+```
+my-project/
+├── src/
+│   ├── modules/     # Feature modules (users, auth, etc.)
+│   ├── common/      # Shared utilities
+│   ├── config/      # App configuration
+│   └── index.ts     # Entry point
+├── tsconfig.json    # TypeScript config (if applicable)
+└── .env             # Environment variables
+```
+
+---
+
+## 🚀 After Installation
+
+```bash
+# Navigate to your project
+cd my-project
+
+# Set up environment variables
+cp .env.example .env  # Edit with your config
+
+# Start development server
+npm run dev
+```
+
+---
+
+## 🛠️ Included Tools
+
+| Tool | Purpose |
+|------|---------|
+| [ESLint](https://eslint.org/) | Linting and code standards |
+| [Prettier](https://prettier.io/) | Code formatting |
+| [Biome](https://biomejs.dev/) | Fast formatter & linter |
+| [Mongoose](https://mongoosejs.com/) | MongoDB object modeling |
+| [dotenv](https://github.com/motdotla/dotenv) | Environment variable management |
+
+---
+
+## 📋 Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint checks |
+| `npm run format` | Format code with Prettier/Biome |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ by Harshil</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/iamharshil">
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+  </a>
+  <a href="https://www.linkedin.com/in/harshil-chudasama">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="https://instagram.com/iam_harshil">
+    <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
+  </a>
+</p>
+
+<p align="center">
+  ⭐ Star this repo if you find it useful!
+</p>

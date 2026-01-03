@@ -2,6 +2,25 @@
 
 All notable changes to this project are documented in this file.
 
+## 3.3.0 - 2026-01-03
+
+### Improvements
+
+- **CLI Experience**: Completely redesigned the CLI for a cleaner, minimalist look with professional Unicode icons and reduced visual noise.
+- **ASCII Banner**: Added a polished ASCII banner with version display on startup.
+- **New Flags**: Added support for `--help` and `--version` flags.
+- **Validation**: Project name is now validated immediately before proceeding with other prompts.
+- **Documentation**: Revamped `README.md` with better formatting, feature tables, and project structure diagrams.
+
+### Fixes
+
+- **Inquirer Compatibility**: Fixed broken prompt options by migrating from legacy `inquirer` to `@inquirer/prompts`.
+- **UI Alignment**: Fixed alignment issues in success/error messages and banner display.
+
+### Dependencies
+
+- Replaced `inquirer` with `@inquirer/prompts` for better maintainability and performance.
+
 ## 3.2.0 - 2025-01-03
 
 ### Summary
