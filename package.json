@@ -1,6 +1,6 @@
 {
     "name": "express-api-template",
-    "version": "3.1.0",
+    "version": "4.0.4-0",
     "description": "Project for quick express.js setup",
     "main": "index.js",
     "type": "module",
@@ -9,7 +9,7 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "release": "np --yolo"
+        "release": "np --yolo --any-branch"
     },
     "homepage": "https://github.com/iamharshil/express-api-template#readme",
     "repository": {
