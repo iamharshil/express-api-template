@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## 3.2.0 - 2025-01-03
+
+### Summary
+
+- Updated dependencies to the latest stable versions for `express-api-template` package.
+
 ## 4.0.0 - 2024-06-15
 
 ### Summary
