@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env';
-import { Bootstrap } from './config/bootstrap';
+
 
 const app = express();
 

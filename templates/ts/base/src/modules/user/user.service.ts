@@ -1,15 +1,13 @@
-import { UserRepository } from '../../shared/repositories/UserRepository';
+import { UserRepository } from '../../models/user.repository';
 
-// This will be injected via Bootstrap or a DI container
+// This will be injected via Bootstrap
 let userRepository: UserRepository;
 
-export class UserService {
-    public static setRepository(repo: UserRepository) {
-        userRepository = repo;
-    }
+export const setUserRepository = (repo: UserRepository) => {
+    userRepository = repo;
+};
 
-    public static async getUser(id: string) {
-        if (!userRepository) throw new Error('UserRepository not initialized');
-        return userRepository.findById(id);
-    }
-}
+export const getUser = async (id: string) => {
+    if (!userRepository) throw new Error('UserRepository not initialized');
+    return userRepository.findById(id);
+};

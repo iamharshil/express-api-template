@@ -4,17 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [4.0.0] - 2026-01-04
 
-### 🚀 Major Changes
-- **Separate Server & App**: Refactored the entry point logic.
-    - `src/app.ts` (or `.js`): Only configures the Express app and exports it. No side effects.
-    - `src/server.ts` (or `.js`): New entry point that handles bootstrapping and starts the server via `app.listen`.
-    - `npm start` and `npm run dev` now point to `src/server`.
-- **Pre-generated JS Templates**: JavaScript templates are now generated ahead of time (during template build) rather than compiled on-the-fly, improving stability and removing TypeScript-related artifacts from JS projects.
+### 🚀 Major Architecture Overhaul (Functional)
+- **Functional Paradigm**: Completely refactored the codebase from class-based to **function-based architecture**.
+    - Removed `UserService`, `UserController`, `Bootstrap` classes.
+    - Replaced with exported functions and object literals.
+- **New Folder Structure**: Adopted a standard, scalable Node.js structure:
+    - `src/lib`: Core adapters (DB, Logger).
+    - `src/models`: Data access layer (Repositories).
+    - `src/middlewares`: Express middlewares (Auth).
+    - `src/modules`: Feature logic (Services, Controllers).
+    - `src/config`: Environment setup and functional Dependency Injection (`setup.ts`).
+- **Improved Presets**:
+    - **Database**: Mongo and Postgres presets now export functional repositories.
+    - **Auth**: JWT and API Key auth rewritten as pure functional middlewares.
+- **Assembler 2.0**: Updated `Assembler.js` to dynamically generate the functional `setup.ts` wiring.
 
-### ✨ Improvements
-- **Security**: Fixed a `spawn` deprecation warning (DEP0190) during dependency installation by optimizing shell usage.
-- **DX**: Enhanced clean output and error handling during installation.
-- **Structure**: Moved `app.ts` to `src/` root for better visibility.
+### ✨ Other Improvements
+- **Pre-generated JS**: JavaScript project generation is now robust and compilation-free for end users.
+- **Strict Types**: Enhanced TypeScript configuration and linting.
+- **Cleanup**: Removed legacy `src/shared` and `src/infra` directories.
 
 ## [3.3.0] - 2026-01-04
 

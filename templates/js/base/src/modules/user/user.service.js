@@ -1,12 +1,10 @@
-// This will be injected via Bootstrap or a DI container
+// This will be injected via Bootstrap
 let userRepository;
-export class UserService {
-    static setRepository(repo) {
-        userRepository = repo;
-    }
-    static async getUser(id) {
-        if (!userRepository)
-            throw new Error('UserRepository not initialized');
-        return userRepository.findById(id);
-    }
-}
+export const setUserRepository = (repo) => {
+    userRepository = repo;
+};
+export const getUser = async (id) => {
+    if (!userRepository)
+        throw new Error('UserRepository not initialized');
+    return userRepository.findById(id);
+};

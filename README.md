@@ -1,73 +1,67 @@
+# Express API Template
 
-# 🚀 Express API Template v4.0.0
+![License](https://img.shields.io/npm/l/express-api-template)
+![Version](https://img.shields.io/npm/v/express-api-template)
+![Build Status](https://img.shields.io/github/actions/workflow/status/iamharshil/express-api-template/test.yml)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
-> Production-ready, modular, and type-safe Express.js API scaffolding for modern developers.
+A production-ready, functional **Express.js boilerplate generator**.  
+Instant scaffolding for scalable, type-safe, and modern Node.js backends.
 
-Stop wasting time on boilerplate. Generate a robust, scalable Express API in seconds with your preferred database, authentication strategy, and language (TypeScript/JavaScript).
+## Features
 
-## ✨ Features
+- **Functional Architecture**: Pure functions, no unnecessary classes.
+- **Type-Safe**: Built with TypeScript 5.0+ and Zod for validation.
+- **Modular Structure**: Organized by features (`src/modules`) and layers (`src/models`, `src/lib`).
+- **Flexible Presets**:
+  - **Database**: MongoDB (Mongoose) or PostgreSQL (pg).
+  - **Auth**: JWT, API Key, or None.
+- **Developer Experience**:
+  - **Hot Reload**: Pre-configured `tsx` / `nodemon`.
+  - **Testing**: Vitest setup out of the box.
+  - **Linting**: Biome/ESLint ready.
 
-- **🏗 Modular Architecture**: Scalable folder structure separating configuration (`src/config`), capabilities (`src/modules`), and core logic (`src/shared`).
-- **🛡 Type-Safe**: Built with **TypeScript** and **Zod** for end-to-end type safety and runtime validation.
-- **🔌 Pluggable Presets**:
-  - **Database**: MongoDB (Mongoose), PostgreSQL (pg), or None.
-  - **Authentication**: JWT (Stateless), API Key, or None.
-- **⚡️ Developer Experience**:
-  - Interactive CLI with **Inquirer**.
-  - Dynamic project assembly using **Assembler**.
-  - **Language Selection**: Generate **TypeScript** (Recommended) or **JavaScript** projects.
-  - **Package Manager Support**: npm, yarn, pnpm, bun.
-- **📦 Production Ready**: Includes `helmet`, `winston` logging, `dotenv` configuration, and standardized error handling.
+## Quick Start
 
-## 🛠 Usage
-
-Run the CLI directly with `npx`:
-
-```bash
-npx express-api-template
-```
-
-Follow the interactive prompts to build your perfect stack:
-
-1.  **Project Name**: Choose a folder name.
-2.  **Language**: TypeScript or JavaScript.
-3.  **Database**: MongoDB, PostgreSQL, or None.
-4.  **Authentication**: JWT, API Key, or None.
-5.  **Package Manager**: Install dependencies with npm, yarn, pnpm, or bun.
-
-### Quick Start (After Generation)
+Generate a new project interactively:
 
 ```bash
-cd <project-name>
-# If you skipped auto-install:
-npm install 
-
-# Start development server
-npm run dev
+npx express-api-template@latest my-app
 ```
 
-## 📂 Project Structure (Modular)
+Or specify options via flags:
+
+```bash
+npx express-api-template my-app --language=typescript --database=postgresql --auth=jwt
+```
+
+## Project Structure
+
+The generated project follows a clean, functional separation of concerns:
 
 ```
 src/
-├── app.ts            # App configuration (Middleware, Routes export) - No side effects
-├── server.ts         # Entry point (Bootstrap, app.listen)
-├── config/           # Environment and Bootstrap wiring
-├── modules/          # Feature modules (User, Auth, etc.)
-├── shared/           # Shared logic (Interfaces, Logger, Errors)
-│   ├── auth/         # Auth provider interfaces
-│   ├── repositories/ # Data access interfaces
-│   └── ...
-└── infra/            # Concrete implementations (injected based on presets)
-    ├── db/           # Database connections (Mongo/Postgres)
-    ├── auth/         # Auth strategies (Jwt/ApiKey)
-    └── repositories/ # DB-specific repositories
+├── config/           # Environment & Dependency Injection
+├── lib/              # Core Adapters (DB, Logger)
+├── middlewares/      # Express Middlewares
+├── models/           # Data Access Layer (Repositories)
+├── modules/          # Feature Logic (Services, Controllers, Routes)
+│   └── user/
+├── utils/            # Shared Helpers
+├── app.ts            # App Configuration
+└── server.ts         # Entry Point
 ```
 
-## 🤝 Contributing
+## Development
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+To work on this template generator locally:
 
-## 📄 License
+1. **Clone**: `git clone https://github.com/iamharshil/express-api-template.git`
+2. **Install**: `npm install`
+3. **Test**:
+   - `npm run test:smoke`: Validates basic generation and build.
+   - `npm run test:matrix`: Validates all 18 permutations.
 
-MIT © [Harshil Agrawal]
+## License
+
+MIT © [Harshil](https://github.com/iamharshil)

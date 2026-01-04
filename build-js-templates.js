@@ -39,24 +39,13 @@ function transpileFile(filePath) {
             moduleResolution: ts.ModuleResolutionKind.NodeNext,
             esModuleInterop: true,
             strict: true,
-            skipLibCheck: true, // We don't check types during simple file-to-file transpile
-            types: [] // no global types
+            skipLibCheck: true,
+            types: []
         }
     });
 
-    // Quick fix for ESM directory imports if needed, 
-    // but typically we are just transpiling 1-to-1.
-    // However, we need to ensure local imports have .js extensions or rely on node resolution.
-    // Since we are moving to pre-transpiled, let's assume standard node ESM behavior.
-
-    // We might need to rewrite imports from .ts to .js?
-    // ts.transpileModule doesn't automatically do that.
-    // For now let's just write the JS output.
-
-    // Check for "app" import issue from migration
     let jsContent = result.outputText;
 
-    // Hacky fix for require.main if present (not expected with new code, but good safety)
     if (jsContent.includes('require.main === module')) {
         jsContent = jsContent.replace('require.main === module', 'process.argv[1] === fileURLToPath(import.meta.url)');
     }
@@ -77,7 +66,7 @@ function processDirectory(dir) {
             const jsContent = transpileFile(fullPath);
             const jsPath = fullPath.replace(/\.ts$/, '.js');
             fs.writeFileSync(jsPath, jsContent);
-            fs.unlinkSync(fullPath); // Remove .ts file
+            fs.unlinkSync(fullPath);
         }
     }
 }
@@ -87,23 +76,18 @@ function cleanPackageJson(dir) {
     if (fs.existsSync(pkgPath)) {
         const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
 
-        // Remove TS deps
-        const devDepsToRemove = ['typescript', 'ts-node', '@types/node', '@types/express', '@types/cors', '@types/pg'];
+        const devDepsToRemove = ['typescript', 'ts-node', '@types/node', '@types/express', '@types/cors', '@types/pg', '@types/dotenv-safe'];
         if (pkg.devDependencies) {
             for (const dep of devDepsToRemove) {
                 delete pkg.devDependencies[dep];
             }
-            // Remove any other @types
             Object.keys(pkg.devDependencies).forEach(key => {
                 if (key.startsWith('@types/')) delete pkg.devDependencies[key];
             });
         }
 
-        // Update scripts
         if (pkg.scripts) {
             pkg.scripts.start = 'node src/server.js';
-            pkg.scripts.dev = 'node --watch --env-file=.env src/server.js'; // Node 18+ watch? Or use nodemon?
-            // Let's stick to nodemon for now as template has it
             pkg.scripts.dev = 'nodemon src/server.js';
             delete pkg.scripts.build;
             delete pkg.scripts.lint;
@@ -114,18 +98,16 @@ function cleanPackageJson(dir) {
         fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
     }
 
-    // Remove tsconfig
     const tsconfigPath = path.join(dir, 'tsconfig.json');
     if (fs.existsSync(tsconfigPath)) fs.unlinkSync(tsconfigPath);
 }
 
 async function main() {
-    console.log('Building JavaScript Templates...');
+    console.log('Building JavaScript Templates (Functional Architecture)...');
 
     // 1. Copy Base
     console.log('Processing Base...');
     const destBase = path.join(JS_BASE_PATH, 'base');
-    // Clean dest first
     if (fs.existsSync(destBase)) fs.rmSync(destBase, { recursive: true, force: true });
 
     copyDir(path.join(TS_BASE_PATH, 'base'), destBase);
@@ -134,7 +116,6 @@ async function main() {
 
     // 2. Copy Presets
     console.log('Processing Presets...');
-    // We iterate through presets
     const tsPresetsPath = path.join(TS_BASE_PATH, 'presets');
     const jsPresetsPath = path.join(JS_BASE_PATH, 'presets');
 
@@ -146,7 +127,6 @@ async function main() {
 
             copyDir(path.join(tsPresetsPath, preset.name), destPreset);
             processDirectory(destPreset);
-            // Presets often don't have package.json, just files
         }
     }
 

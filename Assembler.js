@@ -59,10 +59,7 @@ export class Assembler {
         this.onStateChange('Generating .env.example...');
         this.generateEnvExample();
 
-        // 6. Handle Language (Compile to JS if needed)
-        if (this.options.language === 'javascript') {
-            this.convertToJavascript();
-        }
+        // 6. Handle Language (No longer needed as we use pre-transpiled templates)
     }
 
     applyPreset(presetName) {
@@ -120,80 +117,56 @@ export class Assembler {
         const auth = this.options.auth;   // jwt | apikey | none
         const isTS = this.options.language === 'typescript';
 
-        // NOTE: In JS mode, we rely on standard imports. 
-        // If we strictly used ESM in base, we might need extensions.
-        // Assuming base template uses appropriate module resolution.
-
-        let imports = [
-            isTS ? "import { Application } from 'express';" : "import express from 'express';",
-            "import modules from '../modules/index" + (isTS ? "" : ".js") + "';", // Adding extension for JS ESM if needed? 
-            // Actually, generated code should probably just match what worked in my transpilation test.
-            // Transpilation didn't add extensions automatically. 
-            // If user runs with node, they need extensions or experimental flag.
-            // But let's assume standard import for now.
-            "import modules from '../modules';",
-        ];
-
-        let initLines = [
-            "console.log('Bootstrapping...');"
-        ];
+        let imports = [];
+        let setupLines = [];
 
         // DB Setup
         if (db === 'mongodb') {
-            imports.push(`import { connectMongo } from '../infra/db/mongo${isTS ? '' : '.js'}';`);
-            imports.push(`import { MongoUserRepository } from '../infra/repositories/MongoUserRepository${isTS ? '' : '.js'}';`);
-            imports.push(`import { MongoApiKeyRepository } from '../infra/repositories/MongoApiKeyRepository${isTS ? '' : '.js'}';`);
-            imports.push(`import { UserService } from '../modules/user/user.service${isTS ? '' : '.js'}';`); // Service usually default export?
+            imports.push(`import { connectMongo } from '../lib/db/mongo${isTS ? '' : '.js'}';`);
+            imports.push(`import { mongoUserRepository } from '../models/mongo.user.repository${isTS ? '' : '.js'}';`);
+            imports.push(`import * as UserService from '../modules/user/user.service${isTS ? '' : '.js'}';`);
 
-            initLines.push("await connectMongo();");
-            initLines.push("const userRepo = new MongoUserRepository();");
-            initLines.push("const apiKeyRepo = new MongoApiKeyRepository();");
-            initLines.push("UserService.setRepository(userRepo);");
+            setupLines.push("await connectMongo();");
+            setupLines.push("UserService.setUserRepository(mongoUserRepository);");
+
+            if (auth === 'apikey') {
+                imports.push(`import { mongoApiKeyRepository } from '../models/mongo.apikey.repository${isTS ? '' : '.js'}';`);
+                // Assuming separate auth setup or specific injection if needed
+                // For now, ApiKey middleware might import repo directly or we inject it?
+                // Current plan: Auth middleware is just middleware. 
+                // If ApiKeyMiddleware needs repo, ideally we inject it.
+                // But for simplicity in functional scope, we might import it in the middleware 
+                // OR we set it globally like UserService. 
+                // Let's assume ApiKeyMiddleware imports the repo directly or we set it in a shared config.
+                // Actually, if we want properly decoupled, we should have `setApiKeyRepository` in middleware file?
+            }
         } else if (db === 'postgresql') {
-            imports.push(`import { connectPostgres } from '../infra/db/postgres${isTS ? '' : '.js'}';`);
-            imports.push(`import { PostgresUserRepository } from '../infra/repositories/PostgresUserRepository${isTS ? '' : '.js'}';`);
-            imports.push(`import { PostgresApiKeyRepository } from '../infra/repositories/PostgresApiKeyRepository${isTS ? '' : '.js'}';`);
-            imports.push(`import { UserService } from '../modules/user/user.service${isTS ? '' : '.js'}';`);
+            imports.push(`import { connectPostgres } from '../lib/db/postgres${isTS ? '' : '.js'}';`);
+            imports.push(`import { postgresUserRepository } from '../models/postgres.user.repository${isTS ? '' : '.js'}';`);
+            imports.push(`import * as UserService from '../modules/user/user.service${isTS ? '' : '.js'}';`);
 
-            initLines.push("await connectPostgres();");
-            initLines.push("const userRepo = new PostgresUserRepository();");
-            initLines.push("const apiKeyRepo = new PostgresApiKeyRepository();");
-            initLines.push("UserService.setRepository(userRepo);");
+            setupLines.push("await connectPostgres();");
+            setupLines.push("UserService.setUserRepository(postgresUserRepository);");
         }
 
-        // Auth Setup
-        if (auth === 'jwt') {
-            imports.push(`import { JwtAuthProvider } from '../infra/auth/JwtAuthProvider${isTS ? '' : '.js'}';`);
-            initLines.push("const authProvider = new JwtAuthProvider();");
-        } else if (auth === 'apikey') {
-            imports.push(`import { ApiKeyAuthProvider } from '../infra/auth/ApiKeyAuthProvider${isTS ? '' : '.js'}';`);
-            // ApiKeyAuth needs the repo, which we defined above as apiKeyRepo
-            initLines.push("const authProvider = new ApiKeyAuthProvider(apiKeyRepo);");
-        } else {
-            imports.push(`import { NoAuthProvider } from '../infra/auth/NoAuthProvider${isTS ? '' : '.js'}';`);
-            initLines.push("const authProvider = new NoAuthProvider();");
-        }
-
-        initLines.push("app.use('/api/v1', modules);");
-        initLines.push("console.log('Bootstrap finished');");
+        // Auth Setup - mostly middleware file replacement handled by preset copy
+        // But if we need to configure global strategies, do it here.
+        // For now, the middleware file itself carries the logic.
 
         let content = imports.join('\n') + '\n\n';
 
         if (isTS) {
-            content += 'export class Bootstrap {\n';
-            content += '  public static async init(app: Application): Promise<void> {\n';
+            content += 'export const setup = async (): Promise<void> => {\n';
         } else {
-            content += 'export class Bootstrap {\n';
-            content += '  static async init(app) {\n';
+            content += 'export const setup = async () => {\n';
         }
 
-        content += `    ${initLines.join('\n    ')}\n`;
-        content += '  }\n';
-        content += '}\n';
+        content += `    ${setupLines.join('\n    ')}\n`;
+        content += '};\n';
 
         const ext = isTS ? 'ts' : 'js';
-        const bootstrapPath = path.join(this.projectPath, 'src', 'config', `bootstrap.${ext}`);
-        fs.writeFileSync(bootstrapPath, content.trim());
+        const setupPath = path.join(this.projectPath, 'src', 'config', `setup.${ext}`);
+        fs.writeFileSync(setupPath, content.trim());
     }
 
     generateEnvExample() {
@@ -217,85 +190,6 @@ export class Assembler {
         fs.writeFileSync(path.join(this.projectPath, '.env.example'), content);
     }
 
-    convertToJavascript() {
-        this.onStateChange('Converting to JavaScript (this may take a moment)...');
+    // convertToJavascript removed
 
-        // 1. Install dependencies temporarily to run tsc (we need typescript installed)
-        // Since we are in the generated project, we might not have node_modules yet if verify/install wasn't run.
-        // But tsc is needed. We can assume the environment has it or install it.
-        // Better strategy: Use the template's own typescript config to compile.
-
-        // We need to run `tsc` inside the projectPath.
-        // But first we must ensure `typescript` is available. 
-        // We'll rely on global tsc or fast install.
-
-        try {
-            // Install typescript locally just for the build step if not present
-            // execSync('npm install typescript --no-save', { cwd: this.projectPath, stdio: 'ignore' });
-
-            // Actually, since we are a CLI, we might want to just run the build using our own typescript dependency?
-            // No, that's complex. 
-            // EASIEST WAY: Run compilation after install?
-            // User flow in index.js asks "Install dependencies?". 
-            // If we compile NOW, we need dependencies. 
-            // If we wait, we can't delete TS files yet.
-
-            // ALTERNATIVE: Transpile using a lightweight tool included in CLI (like esbuild-wasm or typescript api) 
-            // but we don't want to bloat.
-
-            // Let's use `execSync` to run `tsc` assuming user has node. 
-            // We'll force install typescript in the target temp directory if we have to.
-
-            // For now, let's assume we can run `npx tsc`
-            // Use stdio: ignore to keep spinner clean
-            execSync('npm install typescript @types/node --no-save', { cwd: this.projectPath, stdio: 'ignore' });
-            execSync('npx tsc', { cwd: this.projectPath, stdio: 'ignore' });
-
-            // 2. Move dist/* to root or replace src logic
-            // Default tsc output is `dist/` per our base tsconfig
-            const distPath = path.join(this.projectPath, 'dist');
-            const srcPath = path.join(this.projectPath, 'src');
-
-            // Remove original src
-            fs.rmSync(srcPath, { recursive: true, force: true });
-
-            // Move dist contents to src (so structure remains src/...) OR keep it flat?
-            // Usually JS projects still use src/.
-            fs.renameSync(distPath, srcPath);
-
-            // 3. Clean up package.json
-            const pkgPath = path.join(this.projectPath, 'package.json');
-            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
-
-            // Remove TS-related devDeps
-            delete pkg.devDependencies['typescript'];
-            delete pkg.devDependencies['ts-node'];
-            delete pkg.devDependencies['@types/cors'];
-            delete pkg.devDependencies['@types/express'];
-            delete pkg.devDependencies['@types/node'];
-            // Remove others added by presets (filtering by @types/)
-            Object.keys(pkg.devDependencies).forEach(key => {
-                if (key.startsWith('@types/')) delete pkg.devDependencies[key];
-            });
-
-            // Update scripts
-            pkg.scripts.start = 'node src/config/app.js';
-            pkg.scripts.dev = 'nodemon src/config/app.js';
-            delete pkg.scripts.build; // No build step for JS
-            delete pkg.scripts.lint;  // Might need js lint
-            delete pkg.scripts.format; // Might need js format
-
-            // Update main
-            pkg.main = 'src/config/app.js';
-
-            fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
-
-            // 4. Remove tsconfig
-            fs.unlinkSync(path.join(this.projectPath, 'tsconfig.json'));
-
-        } catch (error) {
-            // Re-throw so CLI handles it
-            throw new Error(`Failed to convert to JavaScript: ${error.message}`);
-        }
-    }
 }
