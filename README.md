@@ -1,158 +1,73 @@
-<p align="center">
-  <img src="https://img.shields.io/github/v/release/iamharshil/express-api-template?style=for-the-badge&color=blue" alt="Release" />
-  <img src="https://img.shields.io/npm/dt/express-api-template?style=for-the-badge&color=green" alt="Downloads" />
-  <img src="https://img.shields.io/github/license/iamharshil/express-api-template?style=for-the-badge" alt="License" />
-  <img src="https://img.shields.io/github/stars/iamharshil/express-api-template?style=for-the-badge&color=yellow" alt="Stars" />
-</p>
 
-<h1 align="center">🚀 Express API Template</h1>
+# 🚀 Express API Template v4.0.0
 
-<p align="center">
-  <strong>A production-ready CLI to scaffold Express.js APIs in seconds</strong>
-</p>
+> Production-ready, modular, and type-safe Express.js API scaffolding for modern developers.
 
-<p align="center">
-  Skip the boilerplate. Start building. Choose your language. Pick your architecture.
-</p>
-
----
+Stop wasting time on boilerplate. Generate a robust, scalable Express API in seconds with your preferred database, authentication strategy, and language (TypeScript/JavaScript).
 
 ## ✨ Features
 
-| Feature | Description |
-|---------|-------------|
-| 🔷 **TypeScript & JavaScript** | Full support for both languages—you choose |
-| 🏗️ **MVC or Scalable Architecture** | Classic Model-View-Controller or modern modular structure |
-| 🍃 **MongoDB Ready** | Pre-configured MongoDB connection with Mongoose |
-| 📂 **Smart Project Structure** | Organized folders for controllers, routes, models, and utilities |
-| 🔧 **ESLint + Prettier + Biome** | Code quality tools configured out of the box |
-| 📦 **Auto Dependency Install** | Optional automatic `npm install` during setup |
-| 🎯 **Interactive CLI** | Guided prompts for a smooth setup experience |
+- **🏗 Modular Architecture**: Scalable folder structure separating configuration (`src/config`), capabilities (`src/modules`), and core logic (`src/shared`).
+- **🛡 Type-Safe**: Built with **TypeScript** and **Zod** for end-to-end type safety and runtime validation.
+- **🔌 Pluggable Presets**:
+  - **Database**: MongoDB (Mongoose), PostgreSQL (pg), or None.
+  - **Authentication**: JWT (Stateless), API Key, or None.
+- **⚡️ Developer Experience**:
+  - Interactive CLI with **Inquirer**.
+  - Dynamic project assembly using **Assembler**.
+  - **Language Selection**: Generate **TypeScript** (Recommended) or **JavaScript** projects.
+  - **Package Manager Support**: npm, yarn, pnpm, bun.
+- **📦 Production Ready**: Includes `helmet`, `winston` logging, `dotenv` configuration, and standardized error handling.
 
----
+## 🛠 Usage
 
-## 📦 Quick Start
+Run the CLI directly with `npx`:
 
 ```bash
 npx express-api-template
 ```
 
-That's it! The CLI will guide you through:
+Follow the interactive prompts to build your perfect stack:
 
-1. **Project name** — Name your project folder
-2. **Architecture** — Choose MVC or Scalable (Modular)
-3. **Language** — JavaScript or TypeScript
-4. **Dependencies** — Auto-install packages or do it yourself
+1.  **Project Name**: Choose a folder name.
+2.  **Language**: TypeScript or JavaScript.
+3.  **Database**: MongoDB, PostgreSQL, or None.
+4.  **Authentication**: JWT, API Key, or None.
+5.  **Package Manager**: Install dependencies with npm, yarn, pnpm, or bun.
 
----
-
-## 🏗️ Project Structures
-
-### MVC (Model-View-Controller)
-
-Traditional, battle-tested architecture ideal for small to medium projects.
-
-```
-my-project/
-├── config/          # Configuration files
-├── controllers/     # Request handlers
-├── models/          # Mongoose schemas
-├── routers/         # Express routes
-├── utils/           # Helper functions
-├── lib/             # Shared libraries
-├── index.js         # Entry point
-└── .env             # Environment variables
-```
-
-### Scalable (Modular)
-
-Feature-based architecture designed for large, maintainable codebases.
-
-```
-my-project/
-├── src/
-│   ├── modules/     # Feature modules (users, auth, etc.)
-│   ├── common/      # Shared utilities
-│   ├── config/      # App configuration
-│   └── index.ts     # Entry point
-├── tsconfig.json    # TypeScript config (if applicable)
-└── .env             # Environment variables
-```
-
----
-
-## 🚀 After Installation
+### Quick Start (After Generation)
 
 ```bash
-# Navigate to your project
-cd my-project
-
-# Set up environment variables
-cp .env.example .env  # Edit with your config
+cd <project-name>
+# If you skipped auto-install:
+npm install 
 
 # Start development server
 npm run dev
 ```
 
----
+## 📂 Project Structure (Modular)
 
-## 🛠️ Included Tools
-
-| Tool | Purpose |
-|------|---------|
-| [ESLint](https://eslint.org/) | Linting and code standards |
-| [Prettier](https://prettier.io/) | Code formatting |
-| [Biome](https://biomejs.dev/) | Fast formatter & linter |
-| [Mongoose](https://mongoosejs.com/) | MongoDB object modeling |
-| [dotenv](https://github.com/motdotla/dotenv) | Environment variable management |
-
----
-
-## 📋 Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint checks |
-| `npm run format` | Format code with Prettier/Biome |
-
----
+```
+src/
+├── app.ts            # App configuration (Middleware, Routes export) - No side effects
+├── server.ts         # Entry point (Bootstrap, app.listen)
+├── config/           # Environment and Bootstrap wiring
+├── modules/          # Feature modules (User, Auth, etc.)
+├── shared/           # Shared logic (Interfaces, Logger, Errors)
+│   ├── auth/         # Auth provider interfaces
+│   ├── repositories/ # Data access interfaces
+│   └── ...
+└── infra/            # Concrete implementations (injected based on presets)
+    ├── db/           # Database connections (Mongo/Postgres)
+    ├── auth/         # Auth strategies (Jwt/ApiKey)
+    └── repositories/ # DB-specific repositories
+```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-<p align="center">
-  <strong>Built with ❤️ by Harshil</strong>
-</p>
-
-<p align="center">
-  <a href="https://github.com/iamharshil">
-    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
-  </a>
-  <a href="https://www.linkedin.com/in/harshil-chudasama">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
-  </a>
-  <a href="https://instagram.com/iam_harshil">
-    <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
-  </a>
-</p>
-
-<p align="center">
-  ⭐ Star this repo if you find it useful!
-</p>
+MIT © [Harshil Agrawal]

@@ -1,6 +1,6 @@
 {
     "name": "express-api-template",
-    "version": "3.3.0",
+    "version": "4.0.0",
     "description": "Project for quick express.js setup",
     "main": "index.js",
     "type": "module",
@@ -46,6 +46,7 @@
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-prettier": "^5.5.4",
         "np": "^10.2.0",
-        "prettier": "^3.7.4"
+        "prettier": "^3.7.4",
+        "typescript": "^5.9.3"
     }
 }

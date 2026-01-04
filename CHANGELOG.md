@@ -1,53 +1,40 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
+All notable changes to this project will be documented in this file.
 
-## 3.3.0 - 2026-01-03
+## [4.0.0] - 2026-01-04
 
-### Improvements
+### 🚀 Major Changes
+- **Separate Server & App**: Refactored the entry point logic.
+    - `src/app.ts` (or `.js`): Only configures the Express app and exports it. No side effects.
+    - `src/server.ts` (or `.js`): New entry point that handles bootstrapping and starts the server via `app.listen`.
+    - `npm start` and `npm run dev` now point to `src/server`.
+- **Pre-generated JS Templates**: JavaScript templates are now generated ahead of time (during template build) rather than compiled on-the-fly, improving stability and removing TypeScript-related artifacts from JS projects.
 
-- **CLI Experience**: Completely redesigned the CLI for a cleaner, minimalist look with professional Unicode icons and reduced visual noise.
-- **ASCII Banner**: Added a polished ASCII banner with version display on startup.
-- **New Flags**: Added support for `--help` and `--version` flags.
-- **Validation**: Project name is now validated immediately before proceeding with other prompts.
-- **Documentation**: Revamped `README.md` with better formatting, feature tables, and project structure diagrams.
+### ✨ Improvements
+- **Security**: Fixed a `spawn` deprecation warning (DEP0190) during dependency installation by optimizing shell usage.
+- **DX**: Enhanced clean output and error handling during installation.
+- **Structure**: Moved `app.ts` to `src/` root for better visibility.
 
-### Fixes
+## [3.3.0] - 2026-01-04
 
-- **Inquirer Compatibility**: Fixed broken prompt options by migrating from legacy `inquirer` to `@inquirer/prompts`.
-- **UI Alignment**: Fixed alignment issues in success/error messages and banner display.
+### 🚀 Major Features
+- **Modular Architecture**: Completely refactored the template to a "Base + Presets" model where features are pluggable.
+- **Dynamic Assembly**: Introduced `Assembler.js` to dynamically generate projects by merging base functionality with selected presets.
+- **Language Support**: Added support for generating **JavaScript** projects by compiling the TypeScript source on-the-fly.
+- **Package Manager Selection**: Users can now choose `npm`, `yarn`, `pnpm`, or `bun` for installation.
 
-### Dependencies
+### ✨ CLI Improvements
+- **Interactive Prompts**: Replaced basic input with `inquirer` for a richer user experience (Select lists, confirmations).
+- **Project Summary**: Added a confirmation summary step before project creation.
+- **Granular Feedback**: Added real-time spinners for each build step (Copying, Compiling, Installing).
+- **Smart Instructions**: Final output now provides context-aware "Next Steps" (e.g., specific `.env` reminders, correct `pnpm` commands).
+- **Rich Help**: Updated `--help` flag to display detailed feature descriptions.
 
-- Replaced `inquirer` with `@inquirer/prompts` for better maintainability and performance.
+### 🐛 Fixes
+- Replaced legacy `createDirectoryContents.js` with robust `Assembler` class.
+- Fixed template structural inconsistencies by enforcing strict interface-based decoupling.
+- Silenced internal build logs to prevent CLI UI corruption.
 
-## 3.2.0 - 2025-01-03
-
-### Summary
-
-- Updated dependencies to the latest stable versions for `express-api-template` package.
-
-## 4.0.0 - 2024-06-15
-
-### Summary
-
-- Major release introducing built-in authentication options and multiple security hardenings.
-- All templates now use import syntax and ES modules by default.
-- Performance optimizations and dependency updates across the template.
-- Code formatting and linting migrated from Rome (deprecated) to Biome.
-- Marked issue #8 as resolved (implemented in the [v3.0](https://github.com/iamharshil/express-api-template/releases/tag/v3.0.0) release).
-
-### Security
-
-- Added security middlewares: `helmet`, `express-rate-limit`, `rate-limit-redis`, `csurf`, `xss-clean`, `hpp`.
-- Switched password hashing from `bcrypt` to `argon2` for stronger, modern hashing; see the migration notes below.
-
-### Dependencies
-
-- Updated dependencies to the latest stable versions — consult the package manifest for exact versions.
-
-### Notes
-
-- Upgrading from v3.x may require reviewing authentication integration and migrating stored password hashes to Argon2; consider rehashing passwords on next successful login or using a one-time migration script.
-- Run tests and verify rate limiting and CSRF configurations after upgrading.
-- Review the security middleware defaults and adjust settings (rate limits, CSRF cookie options, CORS, etc.) to match your deployment environment.
+## [3.2.0] - Previous Version
+- Initial TypeScript support and basic structure.
