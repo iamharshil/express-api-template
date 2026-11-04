@@ -78,7 +78,7 @@ const LANGUAGE_CHOICES = [
     },
 ];
 
-function printSuccess(projectName, projectLanguage, projectStructure, installed) {
+function printSuccess(projectName, projectLanguage, projectStructure, installed, useCurrentDirectory) {
     const lang = projectLanguage === "Typescript" ? "TypeScript" : "JavaScript";
     const langIcon = projectLanguage === "Typescript" ? c("blue", icons.typescript) : c("yellow", icons.javascript);
     const structIcon = projectStructure === "Scalable" ? c("magenta", icons.package) : c("yellow", icons.folder);
@@ -95,8 +95,11 @@ function printSuccess(projectName, projectLanguage, projectStructure, installed)
     console.log("");
     console.log(c("bold", "  Next steps:"));
     console.log("");
-    console.log(`  ${c("cyan", "1.")} ${c("dim", "cd")} ${c("bold", projectName)}`);
-    let step = 2;
+    let step = 1;
+    if (!useCurrentDirectory) {
+        console.log(`  ${c("cyan", `${step}.`)} ${c("dim", "cd")} ${c("bold", projectName)}`);
+        step++;
+    }
     if (!installed) {
         console.log(`  ${c("cyan", `${step}.`)} ${c("dim", "npm install")}`);
         step++;
@@ -143,21 +146,27 @@ async function main() {
     }
 
     try {
-        // Project name
-        const projectName = await input({
-            message: "Project name:",
-            default: "my-express-api",
-            validate: (value) => {
-                if (!value.trim()) return "Project name cannot be empty.";
-                if (!/^([A-Za-z\-_\d])+$/.test(value)) {
-                    return "Only letters, numbers, underscores, and hyphens allowed.";
-                }
-                if (fs.existsSync(path.join(CURR_DIR, value))) {
-                    return `Folder "${value}" already exists. Choose a different name.`;
-                }
-                return true;
-            },
-        });
+        // Project name or current directory
+        const useCurrentDirectory = args.includes(".");
+        let projectName;
+        if (useCurrentDirectory) {
+            projectName = path.basename(CURR_DIR);
+        } else {
+            projectName = await input({
+                message: "Project name:",
+                default: "my-express-api",
+                validate: (value) => {
+                    if (!value.trim()) return "Project name cannot be empty.";
+                    if (!/^([A-Za-z\-_\d])+$/.test(value)) {
+                        return "Only letters, numbers, underscores, and hyphens allowed.";
+                    }
+                    if (fs.existsSync(path.join(CURR_DIR, value))) {
+                        return `Folder "${value}" already exists. Choose a different name.`;
+                    }
+                    return true;
+                },
+            });
+        }
 
         // Project structure
         const projectStructure = await select({
@@ -181,7 +190,7 @@ async function main() {
         const projectLanguage = useTypeScript ? "Typescript" : "Javascript";
         const projectChoice = `${projectLanguage}-${projectStructure}`;
         const templatePath = path.join(__dirname, "templates", projectChoice);
-        const projectPath = path.join(CURR_DIR, projectName);
+        const projectPath = useCurrentDirectory ? CURR_DIR : path.join(CURR_DIR, projectName);
 
         // Create project with spinner
         const createSpinner = ora({
@@ -190,8 +199,8 @@ async function main() {
         }).start();
 
         await new Promise((resolve) => setTimeout(resolve, 500)); // Brief pause for effect
-        fs.mkdirSync(projectPath);
-        createDirectoryContents(templatePath, projectName);
+        if (!useCurrentDirectory) fs.mkdirSync(projectPath);
+        createDirectoryContents(templatePath, projectPath);
         createSpinner.succeed("Project structure created");
 
         if (shouldInstallPackages) {
@@ -213,7 +222,7 @@ async function main() {
             });
         }
 
-        printSuccess(projectName, projectLanguage, projectStructure, shouldInstallPackages);
+        printSuccess(projectName, projectLanguage, projectStructure, shouldInstallPackages, useCurrentDirectory);
     } catch (error) {
         if (error.name === "ExitPromptError") {
             console.log("");
