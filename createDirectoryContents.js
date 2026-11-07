@@ -1,31 +1,54 @@
 import fs from "node:fs";
+import path from "node:path";
 
-const CURR_DIR = process.cwd();
+function findConflicts(templatePath, destinationPath, relativePath = "") {
+    const conflicts = [];
 
-const createDirectoryContents = (templatePath, newProjectPath) => {
-	const filesToCreate = fs.readdirSync(templatePath);
+    for (const entry of fs.readdirSync(templatePath, { withFileTypes: true })) {
+        const name = entry.name === ".npmignore" ? ".gitignore" : entry.name;
+        const sourcePath = path.join(templatePath, entry.name);
+        const targetPath = path.join(destinationPath, name);
+        const relativeTargetPath = path.join(relativePath, name);
 
-	filesToCreate.forEach((file) => {
-		const origFilePath = `${templatePath}/${file}`;
+        if (fs.existsSync(targetPath)) {
+            const targetIsDirectory = fs.statSync(targetPath).isDirectory();
+            if (!entry.isDirectory() || !targetIsDirectory) {
+                conflicts.push(relativeTargetPath);
+                continue;
+            }
+        }
 
-		// get stats about the current file
-		const stats = fs.statSync(origFilePath);
+        if (entry.isDirectory()) {
+            conflicts.push(...findConflicts(sourcePath, targetPath, relativeTargetPath));
+        }
+    }
 
-		if (stats.isFile()) {
-			const contents = fs.readFileSync(origFilePath, "utf8");
+    return conflicts;
+}
 
-			// Rename
-			if (file === ".npmignore") file = ".gitignore";
+function copyDirectoryContents(templatePath, destinationPath) {
+    fs.mkdirSync(destinationPath, { recursive: true });
 
-			const writePath = `${CURR_DIR}/${newProjectPath}/${file}`;
-			fs.writeFileSync(writePath, contents, "utf8");
-		} else if (stats.isDirectory()) {
-			fs.mkdirSync(`${CURR_DIR}/${newProjectPath}/${file}`);
+    for (const entry of fs.readdirSync(templatePath, { withFileTypes: true })) {
+        const name = entry.name === ".npmignore" ? ".gitignore" : entry.name;
+        const sourcePath = path.join(templatePath, entry.name);
+        const targetPath = path.join(destinationPath, name);
 
-			// recursive call
-			createDirectoryContents(`${templatePath}/${file}`, `${newProjectPath}/${file}`);
-		}
-	});
+        if (entry.isDirectory()) {
+            copyDirectoryContents(sourcePath, targetPath);
+        } else {
+            fs.copyFileSync(sourcePath, targetPath, fs.constants.COPYFILE_EXCL);
+        }
+    }
+}
+
+const createDirectoryContents = (templatePath, destinationPath) => {
+    const conflicts = findConflicts(templatePath, destinationPath);
+    if (conflicts.length) {
+        throw new Error(`These files already exist: ${conflicts.join(", ")}. Move them or choose another folder.`);
+    }
+
+    copyDirectoryContents(templatePath, destinationPath);
 };
 
 export default createDirectoryContents;

@@ -37,6 +37,14 @@
 npx express-api-template
 ```
 
+To scaffold directly into the current directory, run:
+
+```bash
+npx express-api-template .
+```
+
+Existing files are preserved; if a template file would overwrite one, setup stops and reports the conflict.
+
 That's it! The CLI will guide you through:
 
 1. **Project name** — Name your project folder
